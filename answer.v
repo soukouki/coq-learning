@@ -52,7 +52,7 @@ Definition and_to_or : A /\ B -> A \/ B :=
     | conj a _ => or_introl a
   end.
 
-(* Q3-1 move=>とexactを使う問題 *)
+(* Q3-1 move =>とexactを使う問題 *)
 Theorem A_to_B_to_A' : A -> B -> A.
 Proof.
 move => a.
@@ -153,7 +153,7 @@ Qed.
 (* Q5-3 existsを使う問題 *)
 Theorem mul_functional : forall n m, exists x, x = n * m.
 Proof.
-move=> n m.
+move => n m.
 by exists (n * m).
 Qed.
 
@@ -199,4 +199,115 @@ induction n.
 - by rewrite n_plus_zero_eq_n.
 - by rewrite /= IHn succ_plus.
 Qed.
+
+Fixpoint length (l : list nat) := 
+  match l with
+  | nil => 0
+  | cons _ l' => S (length l')
+  end.
+
+Fixpoint append (l : list nat) (n : nat) :=
+  match l with
+  | nil => cons n nil
+  | cons head l' => cons head (append l' n)
+  end.
+
+(* Q7-1 リストに関する関数を定義する問題 *)
+Fixpoint list_sum (l : list nat) :=
+  match l with
+  | nil => 0
+  | cons n l' => n + list_sum l'
+  end.
+
+(* Q7-2 少し複雑な関数を定義する問題 *)
+Fixpoint list_at (l : list nat) (n : nat) := 
+  match l with
+  | nil => 0
+  | cons h l' =>
+    match n with
+    | 0 => h
+    | S n' => list_at l' n'
+    end
+  end.
+
+Fixpoint last (l : list nat) :=
+  match l with
+  | nil => 0
+  | cons n1 nil => n1
+  | cons n1 (cons n2 l' as tail) => last tail
+  end.
+
+(* Q7-3 リストに関する関数の性質を証明する問題 *)
+Theorem cons_length l n : length (cons n l) = S (length l).
+Proof.
+by rewrite /=.
+Qed.
+
+Theorem append_neq_nil l n : append l n <> nil.
+Proof.
+move => H1.
+case_eq l.
+- move => H2.
+  rewrite H2 in H1.
+  by rewrite /= in H1.
+- move => n' l' H2.
+  rewrite H2 in H1.
+  by rewrite /= in H1.
+Restart.
+by case_eq l.
+Qed.
+
+(* Q7-4 リストに関する関数について帰納法を使って証明する *)
+Theorem last_append l n : last (append l n) = n.
+Proof.
+induction l.
+- by rewrite /=.
+- rewrite /=.
+  case_eq (append l n).
+  + move => H1.
+    by apply append_neq_nil in H1.
+  + move=> n' l' H1.
+    by rewrite H1 in IHl.
+Restart.
+induction l => //.
+rewrite /=.
+case_eq (append l n) => [ H1 | n' l' H1 ].
+- by apply append_neq_nil in H1.
+- by rewrite H1 in IHl.
+Qed.
+
+(* Q7-5 *)
+Theorem list_at_pred_length_eq_last l : list_at l (pred (length l)) = last l.
+Proof.
+induction l.
+- by rewrite /=.
+- rewrite /=.
+  rewrite -IHl.
+  case l.
+  + by rewrite /=.
+  + by rewrite /=.
+Restart.
+induction l => //.
+rewrite /=.
+rewrite -IHl.
+by case l.
+Qed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

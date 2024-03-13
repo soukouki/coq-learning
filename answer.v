@@ -109,6 +109,8 @@ Restart.
 case => [ a | b ]. (* このように書くと、複数の枝に分かれるcaseでもmoveを省略できます *)
 - by right.
 - by left.
+Restart.
+case => [ a | b ]; by [ right | left ].
 Qed.
 
 (* Q4-4 andとorの総合問題 *)
@@ -293,9 +295,103 @@ rewrite -IHl.
 by case l.
 Qed.
 
+Require Import Coq.Arith.PeanoNat.
 
+(* Q8-1 *)
+Theorem eqb2_eq2 n : (n =? 2) = true -> n = 2.
+Proof.
+case n.
+- by [].
+- move => n0.
+  case n0.
+  + by [].
+  + move => n1.
+    case n1.
+    * by [].
+    * by [].
+Restart.
+case n => // n0.
+case n0 => // n1.
+by case n1.
+Qed.
 
+(* Q8-2 *)
+Lemma eq_eqb n m : n = m -> (n =? m) = true.
+Proof.
+move => H1.
+rewrite H1.
+clear n H1.
+induction m.
+- by [].
+- by [].
+Restart.
+move => ->.
+by induction m.
+Qed.
 
+(* Q8-3 *)
+Theorem eqb_eq n m : (n =? m) = true -> n = m.
+Proof.
+move : m.
+induction n.
+- move => m H1.
+  case_eq m.
+  + by [].
+  + move => n H2.
+    by rewrite H2 in H1.
+- move => m H1.
+  rewrite /= in H1.
+  case_eq m.
+  + move=> H2.
+    by rewrite H2 in H1.
+  + move=> m1 H2.
+    rewrite H2 in H1.
+    apply f_equal.
+    by apply IHn.
+Restart.
+move : m.
+induction n => m H1.
+- case_eq m => // m1 H2.
+  by subst.
+- case_eq m => [ H2 | m1 H3 ].
+  + by subst.
+  + apply /f_equal /IHn.
+    by subst.
+Qed.
+
+Axiom classic : forall P : Prop, P \/ ~ P.
+
+(* Q9-1 *)
+Theorem Peirce P : (~ P -> P) -> P.
+Proof.
+case (classic P) => //.
+move => np H1.
+by apply H1.
+Qed.
+
+(* Q9-2 *)
+Theorem not_and_or P Q : ~ (P /\ Q) <-> ~ P \/ ~ Q.
+Proof.
+split => [ H1 | H1 H2 ].
+- case (classic P) => [ p | np ].
+  + right => q.
+    apply H1.
+    by split.
+  + by left.
+- case H2 => [ p q ].
+  by case H1 => [ np | nq ].
+Qed.
+
+(* Q9-3 *)
+Theorem not_or_and P Q : ~ (P \/ Q) <-> ~ P /\ ~ Q.
+Proof.
+split => [ H1 | H1 H2 ].
+- split => [ p | q ];
+    apply H1;
+    by [ left | right ].
+- case H1 => np nq.
+  by case H2.
+Qed.
 
 
 

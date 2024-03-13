@@ -315,10 +315,6 @@ Theorem plus_comm n m : n + m = m + n.
 Proof.
 Admitted.
 
-End Section2.
-
-
-Section Section3.
 
 (* ここからはリストを使い、アルゴリズムの証明を行います *)
 
@@ -430,6 +426,102 @@ Theorem list_at_pred_length_eq_last l : list_at l (pred (length l)) = last l.
 Proof.
 Admitted.
 
+End Section2.
+
+
+Section Section3.
+
+Require Import Coq.Arith.PeanoNat.
+
+Print bool.
+Print True.
+Print False.
+(* 
+Coqでは、真と偽を表すのにbool型の真偽値だけではなく、命題型を使うことができます
+trueとfalseはbool型の値で、TrueとFalseは命題型の型になります
+True型はコンストラクタIを持つ値で、常に作成できます。任意の命題Pに対してP -> Trueは成り立ちます
+False型はコンストラクタを持たない値で、この型を持つ値は存在しません。ところで、この型の値をパターンマッチするとどうなるでしょうか？
+ *)
+
+Definition False_nat : False -> nat :=
+  fun fals => match fals with
+  end.
+Definition False_bool : False -> bool :=
+  fun fals => match fals with
+  end.
+About False_ind.
+(* 
+なんと任意の型に変換することができるのです。これは論理学の「矛盾からなんでも導ける」という性質に対応しています
+証明している際、仮定が矛盾していることを見つければ、仮定をいじってFalseを導くことで、そこからゴールの型を生成して証明を終わらせられます
+ *)
+
+Print not.
+
+(* Q8-1 CoqIDEではCtrl+Shift+nでNotationの切り替えができます *)
+Theorem eqb2_eq2 n : (n =? 2) = true -> n = 2.
+Proof.
+Admitted.
+
+(* clearタクティックを使うことで、コンテキストにある仮定や変数を削除できます *)
+
+(* Q8-2 *)
+Lemma eq_eqb n m : n = m -> (n =? m) = true.
+Proof.
+Admitted.
+
+Print f_equal. (* 途中でこの定理を使います *)
+
+(* Q8-3 *)
+Theorem eqb_eq n m : (n =? m) = true -> n = m.
+Proof.
+Admitted.
+
+(* 命題A, Bに対して、A <-> Bという命題はA -> BかつB -> Aを表します *)
+Theorem eq_iff_eqb n m : (n =? m) = true <-> n = m.
+Proof.
+split.
+- by apply eqb_eq.
+- by apply eq_eqb.
+Qed.
+
+Theorem eqb2_eq2' n : (n =? 2) = true -> n = 2.
+Proof.
+by rewrite eq_iff_eqb. (* <->にするとrewriteタクティックを使って式中の値を書き換えることができます *)
+Restart.
+rewrite -eq_iff_eqb. (* また、rewrite -<命題名>とすると逆方向への書き換えができます *)
+by [].
+Qed.
+
+
+(* 
+bool型はパターンマッチすることでtrueかfalseに場合分けできます
+しかし、Prop型はそのままでは場合分けできません
+カリー・ハワード同系対応と対応する論理である直感主義論理では、命題が真か偽かで場合分けできません
+ですがこれではまともに数学ができないので、公理としてある命題が真か偽かで場合分けできるようにします
+標準ライブラリではCoq.Logic.Classicに存在しますが、ここでは車輪の再実装をします
+ *)
+
+Axiom classic : forall P : Prop, P \/ ~ P.
+
+Theorem NNPP P : ~ ~ P -> P.
+Proof.
+by case (classic P).
+Qed.
+
+(* Q9-1 *)
+Theorem Peirce P : (~ P -> P) -> P.
+Proof.
+Admitted.
+
+(* Q9-2 *)
+Theorem not_and_or P Q : ~ (P /\ Q) <-> ~ P \/ ~ Q.
+Proof.
+Admitted.
+
+(* Q9-3 *)
+Theorem not_or_and P Q : ~ (P \/ Q) <-> ~ P /\ ~ Q.
+Proof.
+Admitted.
 
 
 

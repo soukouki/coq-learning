@@ -115,6 +115,10 @@ Admitted.
 Definition or_comm' : A \/ B -> B \/ A.
 Admitted.
 
+(* Q2-6 使わない項がある問題 *)
+Definition and_to_or : A /\ B -> A \/ B.
+Admitted.
+
 (* 
 ここまで直接式を書いて証明してきましたが、式を直接書くやり方では複雑な証明に耐えられません
 そこで、Coqではタクティックと呼ばれるものを使って証明します
@@ -257,8 +261,39 @@ Theorem rewrite_sample2 n : n = 3 -> n + 1 = 4.
 Proof.
 Admitted.
 
+(* 
+Coqでは関数の中身を見ることができます
+また、rewrite /Nat.predというふうにすると中身を展開することができます
+ *)
+Print Nat.add.
+Print Nat.mul.
+Print Nat.sub.
+Print Nat.pred.
+
 (* Q5-2 *)
-Theorem rewrite_sample3 n : n = 2 + 2 -> n * n = 16.
+Theorem rewrite_sample3 n m: n = S m -> pred n = m.
+Proof.
+Admitted.
+
+(* 
+論理学では、すべての<変数>に対して<命題>が成り立つ(全称量化)、ある<変数>が存在し<命題>を満たす(存在量化)、という命題を書けます
+Coqでは、前者をforall <変数>, <命題>、後者をexists <変数>, <命題>と書きます
+
+例えば、次の定理add_functinalは「すべての自然数n, mに対して、ある自然数xが存在し、x = n + mを満たす」という意味です
+ *)
+Theorem add_functional : forall n m, exists x, x = n + m.
+Proof.
+move=> n m.
+by exists (n + m).
+Qed.
+
+(* Q5-3 *)
+Theorem mul_functional : forall n m, exists x, x = n * m.
+Proof.
+Admitted.
+
+(* Q5-4 *)
+Theorem sqrt_5 : exists x, x * x = 25.
 Proof.
 Admitted.
 
@@ -286,4 +321,16 @@ Admitted.
 Theorem plus_comm n m : n + m = m + n.
 Proof.
 Admitted.
+
+End Section2.
+
+
+
+
+
+
+
+
+
+
 

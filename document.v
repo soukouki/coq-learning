@@ -10,6 +10,7 @@
 
 基本的なSSReflectのタクティックの機能を使って証明できる
 簡単なInductiveの定義を見て理解できる
+マージソートの形式化の証明ができる
 
 ## 扱わない内容
 
@@ -25,11 +26,12 @@ Ctrl+↓を押して進んでいきましょう
 
 From mathcomp Require Import ssreflect.
 
-
 Section Section1.
 Variables A B C : Prop.
 
 (* 
+*** ステップ1 ***
+
 Definitionで定数を定義します
 A_to_Aという変数はA -> Aという型を持ちます
 fun <名前>  => <式> でラムダ式を定義できます
@@ -59,13 +61,18 @@ Definition imply_trans : (A -> B) -> (B -> C) -> (A -> C).
 Admitted.
 
 
-Print and.
 (* 
+*** ステップ2 ***
+
 Inductive and (A B  : Prop)  : Prop :=  conj  : A -> B -> A /\ B.
 andの定義は上記の通りです。Inductiveは帰納型で、いわゆる代数的データ構造です
 Printコマンド、あるいはCoqIDEではandにカーソルを合わせてCtrl+Shift+Pで定義を確認できます
 Coqでは記法を自由に拡張することができ、A /\ Bと書くことでand A Bと同等のことができます
 
+ *)
+
+Print and.
+(*
 Inductiveで定義された帰納型は、パターンマッチを用いて分解することができます。andは1つの枝conjを持ちます
 conjは2引数を受け取るので、分解するときには2つの値が出てきます。求める型の値はその2つ目の値なので、それを返すことで証明できます
  *)
@@ -122,6 +129,8 @@ Admitted.
 
 
 (* 
+*** ステップ3 ***
+
 ここまで直接式を書いて証明してきましたが、式を直接書くやり方では複雑な証明に耐えられません
 そこで、Coqではタクティックと呼ばれるものを使って証明します
 
@@ -156,6 +165,9 @@ Theorem imply_trans' : (A -> B) -> (B -> C) -> (A -> C).
 Admitted.
 
 
+(* 
+*** ステップ4 ***
+ *)
 Theorem and_left' : A /\ B -> A.
 case.
 (* caseタクティックは、仮定に帰納型がきたときに、自動でパターンマッチを行い分解します *)
@@ -221,8 +233,11 @@ Admitted.
 End Section1.
 
 
-Section Section2.
-(* ここまで「ならば」「かつ」「または」といった基本的な命題を扱ってきましたが、ここからはより数学的な命題を証明していきます *)
+(* 
+*** ステップ5 ***
+
+ここまで「ならば」「かつ」「または」といった基本的な命題を扱ってきましたが、ここからはより数学的な命題を証明していきます
+ *)
 
 Print nat.
 (* 
@@ -290,6 +305,12 @@ Theorem sqrt_5 : exists x, x * x = 25.
 Proof.
 Admitted.
 
+
+(* 
+*** ステップ6 ***
+
+ここからは帰納法を使い、一般的な値の定理を証明していきます
+ *)
 Theorem mul_one_eq_n n : n * 1 = n.
 Proof.
 move : n. (* move :タクティックを使うことで、コンテキストからゴールへ移動できます *)
@@ -298,7 +319,6 @@ induction n. (* inductionタクティックを使うことで、帰納法を利�
 - rewrite /=.
   by rewrite IHn.
 Qed.
-
 
 (* Q6-1 *)
 Theorem n_plus_zero_eq_n n : n + 0 = n.
@@ -316,8 +336,110 @@ Proof.
 Admitted.
 
 
-(* ここからはリストを使い、アルゴリズムの証明を行います *)
+Require Import Coq.Arith.PeanoNat.
 
+(* 
+*** ステップ7 ***
+
+Coqでは、真と偽を表すのにbool型の真偽値だけではなく、命題型を使うことができます
+trueとfalseはbool型の値で、TrueとFalseは命題型の型になります
+True型はコンストラクタIを持つ値で、常に作成できます。任意の命題Pに対してP -> Trueは成り立ちます
+False型はコンストラクタを持たない値で、この型を持つ値は存在しません。ところで、この型の値をパターンマッチするとどうなるでしょうか？
+ *)
+Print bool.
+Print True.
+Print False.
+
+Definition False_nat : False -> nat :=
+  fun fals => match fals with
+  end.
+Definition False_bool : False -> bool :=
+  fun fals => match fals with
+  end.
+About False_ind.
+(* 
+なんと任意の型に変換することができるのです。これは論理学の「矛盾からなんでも導ける」という性質に対応しています
+証明している際、仮定が矛盾していることを見つければ、仮定をいじってFalseを導くことで、そこからゴールの型を生成して証明を終わらせられます
+ *)
+
+Print not.
+
+(* Q7-1 CoqIDEではCtrl+Shift+nでNotationの切り替えができます *)
+Theorem eqb2_eq2 n : (n =? 2) = true -> n = 2.
+Proof.
+Admitted.
+
+(* clearタクティックを使うことで、コンテキストにある仮定や変数を削除できます *)
+
+(* Q7-2 *)
+Lemma eq_eqb n m : n = m -> (n =? m) = true.
+Proof.
+Admitted.
+
+Search (_ _ = _ _ -> _ = _). (* 次の問題を解く際にはある定理を使う必要があります *)
+
+(* Q7-3 *)
+Theorem eqb_eq n m : (n =? m) = true -> n = m.
+Proof.
+Admitted.
+
+(* 命題A, Bに対して、A <-> Bという命題はA -> BかつB -> Aを表します *)
+Theorem eq_iff_eqb n m : (n =? m) = true <-> n = m.
+Proof.
+split.
+- by apply eqb_eq.
+- by apply eq_eqb.
+Qed.
+
+Theorem eqb2_eq2' n : (n =? 2) = true -> n = 2.
+Proof.
+by rewrite eq_iff_eqb. (* <->にするとrewriteタクティックを使って式中の値を書き換えることができます *)
+Restart.
+rewrite -eq_iff_eqb. (* また、rewrite -<命題名>とすると逆方向への書き換えができます *)
+by [].
+Qed.
+
+
+(* 
+*** ステップ8 ***
+
+bool型はパターンマッチすることでtrueかfalseに場合分けできます
+しかし、Prop型はそのままでは場合分けできません
+カリー・ハワード同系対応と対応する論理である直感主義論理では、命題が真か偽かで場合分けできません
+ですがこれではまともに数学ができないので、公理としてある命題が真か偽かで場合分けできるようにします
+標準ライブラリではCoq.Logic.Classicに存在しますが、ここでは車輪の再実装をします
+ *)
+
+Axiom classic : forall P : Prop, P \/ ~ P.
+
+Theorem NNPP P : ~ ~ P -> P.
+Proof.
+by case (classic P).
+Qed.
+
+(* Q8-1 *)
+Theorem Peirce P : (~ P -> P) -> P.
+Proof.
+Admitted.
+
+(* Q8-2 *)
+Theorem not_and_or P Q : ~ (P /\ Q) <-> ~ P \/ ~ Q.
+Proof.
+Admitted.
+
+(* Q8-3 *)
+Theorem not_or_and P Q : ~ (P \/ Q) <-> ~ P /\ ~ Q.
+Proof.
+Admitted.
+
+
+Module Section2.
+
+(* 
+*** ステップ9 ***
+
+ここからはリストを使い、アルゴリズムの証明を行います
+ *)
 Print list.
 (* 
 リストの定義は次のようになっています
@@ -350,12 +472,10 @@ Fixpoint append (l : list nat) (n : nat) :=
   end.
 Compute append (1 :: nil) 2.
 
-(* Q7-1 リストの合計を計算するlist_sum関数を定義してみましょう *)
-Fixpoint list_sum (l : list nat) := 0.
-Compute list_sum (1 :: nil).
-Compute list_sum (1 :: 2 :: nil).
+(* Q9-1 リストを逆順に並べる関数reverseを定義してみましょう *)
+Fixpoint reverse (l : list nat) := l.
 
-(* Q7-2 リストのn番目の要素を取得する関数を定義してみましょう 2重にパターンマッチングする必要があります *)
+(* Q9-2 リストのn番目の要素を取得する関数を定義してみましょう 2重にパターンマッチングする必要があります *)
 Fixpoint list_at (l : list nat) (n : nat) := 0.
 Compute list_at (1 :: 2 :: nil) 0.
 Compute list_at (1 :: 2 :: nil) 1.
@@ -384,7 +504,7 @@ Restart.
 by []. (* byタクティックは証明を大幅に短くできます。活用していきましょう *)
 Qed.
 
-(* Q7-3 *)
+(* Q9-3 *)
 Theorem cons_length l n : length (cons n l) = S (length l).
 Proof.
 Admitted.
@@ -398,7 +518,10 @@ induction l.
   by rewrite IHl.
 Qed.
 
-(* last_appendに使用する補題です。LemmaはTheoremと同等です *)
+(* 
+last_appendに使用する補題です
+Lemma, Fact, Remark, Corollary, Proposition, PropertyはTheoremと同等です
+ *)
 Lemma append_neq_nil l n : append l n <> nil.
 Proof.
 move => H1. (* A <> Bはnot (A == B)になります。not AはA -> False(偽)なので、moveで移動できます *)
@@ -416,116 +539,133 @@ rewrite inを使うことで、コンテキストにある項を書き換えら�
   by rewrite /= in H1.
 Qed.
 
-(* Q7-4 *)
+(* Q9-4 *)
 Theorem last_append l n : last (append l n) = n.
+Proof.
+have : append l n <> nil.
+(* haveとsuffはゴールを追加し、それを使って証明を進めます。長い証明ではhaveとsuffを使い見通しを良くします *)
+  move => H1. (* A <> Bはnot (A == B)になります。not AはA -> False(偽)なので、moveで移動できます *)
+  case_eq l. (* caseだけでは条件が足りないとき、case_eqというタクティックを使うとうまく行く場合もあります *)
+  - move => H2.
+    rewrite H2 in H1.
+(* 
+rewrite inを使うことで、コンテキストにある項を書き換えられます
+同様のタクティックとして、apply inもあります
+ *)
+    rewrite /= in H1.
+    by []. (* 仮定にn :: nil = nilのように明らかに偽である式があるとき、byタクティックを使うとゴールを問わず証明できます *)
+  - move => n' l' H2.
+    rewrite H2 in H1.
+    by rewrite /= in H1.
+move => append_neq_nil.
+Admitted.
+
+(* Q9-5 *)
+Theorem list_at_pred_length_eq_last l : list_at l (pred (length l)) = last l.
 Proof.
 Admitted.
 
-(* Q7-5 *)
-Theorem list_at_pred_length_eq_last l : list_at l (pred (length l)) = last l.
+Search nat list.
+Search length append.
+Search (length (append _ _)).
+(* 
+次の問題では、これまでに証明した定理を再利用します
+今使える定理はSearchコマンドで検索できます
+複数並べるとandに、括弧で括って_を使うとパターンマッチによる検索ができます
+ *)
+
+(* Q9-7 *)
+Theorem reverse_length l : length (reverse l) = length l.
+Proof.
+Admitted.
+
+(* Q9-8 *)
+Theorem reverse_reverse l : reverse (reverse l) = l.
 Proof.
 Admitted.
 
 End Section2.
 
-
-Section Section3.
-
-Require Import Coq.Arith.PeanoNat.
-
-Print bool.
-Print True.
-Print False.
 (* 
-Coqでは、真と偽を表すのにbool型の真偽値だけではなく、命題型を使うことができます
-trueとfalseはbool型の値で、TrueとFalseは命題型の型になります
-True型はコンストラクタIを持つ値で、常に作成できます。任意の命題Pに対してP -> Trueは成り立ちます
-False型はコンストラクタを持たない値で、この型を持つ値は存在しません。ところで、この型の値をパターンマッチするとどうなるでしょうか？
+説明してないが重要なタクティック
+have :
+suff :
+rewriteの{}を使った置換の指定
+rewriteの[]を使った置換の指定
  *)
 
-Definition False_nat : False -> nat :=
-  fun fals => match fals with
+
+(* 
+*** ステップ10 ***
+
+ここまでお疲れ様でした。ここからはラストスパート、ソートの形式化に突き進んでいきましょう
+ *)
+Require Import Recdef FunInd Coq.Lists.List Coq.Arith.Wf_nat Coq.Arith.PeanoNat Coq.Arith.Lt.
+Import Coq.Lists.List.ListNotations Coq.Arith.PeanoNat.Nat.
+(* Listの記法については https://coq.inria.fr/doc/V8.19.0/stdlib/Coq.Lists.List.html を見てください *)
+
+Print In.
+Print length.
+Print filter.
+Print app.
+
+(* Q10-1 リストがソートされていればTrueになる関数is_sortedを定義してみましょう *)
+Fixpoint sorted (l : list nat) : Prop := True.
+
+(* Q10-2 *)
+Lemma length_filter : forall (xs: list nat) f,
+  length (filter f xs) <= length xs.
+Proof.
+Admitted.
+
+(* Q10-3 複雑な再帰の場合にはFunctionコマンドを使用する必要があります。停止性を証明してみましょう *)
+Function quick_sort (xs: list nat) {measure length}: list nat :=
+  match xs with
+  | [] => []
+  | pivot :: xs1 =>
+    let right := filter (fun x => x <? pivot) xs1 in
+    let left := filter (fun x => pivot <=? x) xs1 in
+      quick_sort right ++ pivot :: (quick_sort left)
   end.
-Definition False_bool : False -> bool :=
-  fun fals => match fals with
-  end.
-About False_ind.
-(* 
-なんと任意の型に変換することができるのです。これは論理学の「矛盾からなんでも導ける」という性質に対応しています
-証明している際、仮定が矛盾していることを見つければ、仮定をいじってFalseを導くことで、そこからゴールの型を生成して証明を終わらせられます
- *)
-
-Print not.
-
-(* Q8-1 CoqIDEではCtrl+Shift+nでNotationの切り替えができます *)
-Theorem eqb2_eq2 n : (n =? 2) = true -> n = 2.
 Proof.
 Admitted.
 
-(* clearタクティックを使うことで、コンテキストにある仮定や変数を削除できます *)
-
-(* Q8-2 *)
-Lemma eq_eqb n m : n = m -> (n =? m) = true.
+(* Q10-3 Functionコマンドでquick_sort_equationが定義されるので、それを使いましょう *)
+Lemma quick_sort_nil : quick_sort nil = nil.
 Proof.
 Admitted.
 
-Print f_equal. (* 途中でこの定理を使います *)
-
-(* Q8-3 *)
-Theorem eqb_eq n m : (n =? m) = true -> n = m.
+(* Q10-4 *)
+Lemma quick_sort_single x1 : quick_sort [x1] = [x1].
 Proof.
 Admitted.
 
-(* 命題A, Bに対して、A <-> Bという命題はA -> BかつB -> Aを表します *)
-Theorem eq_iff_eqb n m : (n =? m) = true <-> n = m.
+(* Q10-5 *)
+Lemma filter_negb_In {A: Type}: forall xs (x: A) f g,
+  In x xs ->
+  (forall x', g x' = negb (f x')) ->
+  In x (filter f xs) \/ In x (filter g xs).
 Proof.
-split.
-- by apply eqb_eq.
-- by apply eq_eqb.
-Qed.
-
-Theorem eqb2_eq2' n : (n =? 2) = true -> n = 2.
-Proof.
-by rewrite eq_iff_eqb. (* <->にするとrewriteタクティックを使って式中の値を書き換えることができます *)
-Restart.
-rewrite -eq_iff_eqb. (* また、rewrite -<命題名>とすると逆方向への書き換えができます *)
-by [].
-Qed.
-
+Admitted.
 
 (* 
-bool型はパターンマッチすることでtrueかfalseに場合分けできます
-しかし、Prop型はそのままでは場合分けできません
-カリー・ハワード同系対応と対応する論理である直感主義論理では、命題が真か偽かで場合分けできません
-ですがこれではまともに数学ができないので、公理としてある命題が真か偽かで場合分けできるようにします
-標準ライブラリではCoq.Logic.Classicに存在しますが、ここでは車輪の再実装をします
+未紹介の便利タクティック
+- remember <式> as <名前> はゴールやコンテキスト中の式をくくりだして、証明を見やすくできます
+- subst はコンテキストにある等式を自動で使用し、最小限の変数で表せるように展開します
  *)
 
-Axiom classic : forall P : Prop, P \/ ~ P.
-
-Theorem NNPP P : ~ ~ P -> P.
-Proof.
-by case (classic P).
-Qed.
-
-(* Q9-1 *)
-Theorem Peirce P : (~ P -> P) -> P.
+(* Q10- *)
+Lemma quick_sort_In_ind xs x :
+  (forall xs', length xs' < length xs -> (In x xs' <-> In x (quick_sort xs'))) ->
+  (In x xs <-> In x (quick_sort xs)).
 Proof.
 Admitted.
 
-(* Q9-2 *)
-Theorem not_and_or P Q : ~ (P /\ Q) <-> ~ P \/ ~ Q.
+(* Q10- *)
+Theorem quick_sort_sorted: forall xs,
+  sorted (quick_sort xs).
 Proof.
 Admitted.
-
-(* Q9-3 *)
-Theorem not_or_and P Q : ~ (P \/ Q) <-> ~ P /\ ~ Q.
-Proof.
-Admitted.
-
-
-
-
 
 
 

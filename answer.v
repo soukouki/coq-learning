@@ -129,6 +129,8 @@ Restart.
 by case => [[] | []]. (* 可読性はかなり悪いが、このような書き方もできる *)
 Qed.
 
+End Section1.
+
 (* Q5-1 rewriteとreflexivityを使う問題 *)
 Theorem rewrite_sample2 n : n = 3 -> n + 1 = 4.
 Proof.
@@ -202,102 +204,9 @@ induction n.
 - by rewrite /= IHn succ_plus.
 Qed.
 
-Fixpoint length (l : list nat) := 
-  match l with
-  | nil => 0
-  | cons _ l' => S (length l')
-  end.
-
-Fixpoint append (l : list nat) (n : nat) :=
-  match l with
-  | nil => cons n nil
-  | cons head l' => cons head (append l' n)
-  end.
-
-(* Q7-1 リストに関する関数を定義する問題 *)
-Fixpoint list_sum (l : list nat) :=
-  match l with
-  | nil => 0
-  | cons n l' => n + list_sum l'
-  end.
-
-(* Q7-2 少し複雑な関数を定義する問題 *)
-Fixpoint list_at (l : list nat) (n : nat) := 
-  match l with
-  | nil => 0
-  | cons h l' =>
-    match n with
-    | 0 => h
-    | S n' => list_at l' n'
-    end
-  end.
-
-Fixpoint last (l : list nat) :=
-  match l with
-  | nil => 0
-  | cons n1 nil => n1
-  | cons n1 (cons n2 l' as tail) => last tail
-  end.
-
-(* Q7-3 リストに関する関数の性質を証明する問題 *)
-Theorem cons_length l n : length (cons n l) = S (length l).
-Proof.
-by rewrite /=.
-Qed.
-
-Theorem append_neq_nil l n : append l n <> nil.
-Proof.
-move => H1.
-case_eq l.
-- move => H2.
-  rewrite H2 in H1.
-  by rewrite /= in H1.
-- move => n' l' H2.
-  rewrite H2 in H1.
-  by rewrite /= in H1.
-Restart.
-by case_eq l.
-Qed.
-
-(* Q7-4 リストに関する関数について帰納法を使って証明する *)
-Theorem last_append l n : last (append l n) = n.
-Proof.
-induction l.
-- by rewrite /=.
-- rewrite /=.
-  case_eq (append l n).
-  + move => H1.
-    by apply append_neq_nil in H1.
-  + move=> n' l' H1.
-    by rewrite H1 in IHl.
-Restart.
-induction l => //.
-rewrite /=.
-case_eq (append l n) => [ H1 | n' l' H1 ].
-- by apply append_neq_nil in H1.
-- by rewrite H1 in IHl.
-Qed.
-
-(* Q7-5 *)
-Theorem list_at_pred_length_eq_last l : list_at l (pred (length l)) = last l.
-Proof.
-induction l.
-- by rewrite /=.
-- rewrite /=.
-  rewrite -IHl.
-  case l.
-  + by rewrite /=.
-  + by rewrite /=.
-Restart.
-induction l => //.
-rewrite /=.
-rewrite -IHl.
-by case l.
-Qed.
-
 Require Import Coq.Arith.PeanoNat.
 
-(* Q8-1 *)
+(* Q7-1 *)
 Theorem eqb2_eq2 n : (n =? 2) = true -> n = 2.
 Proof.
 case n.
@@ -315,7 +224,7 @@ case n0 => // n1.
 by case n1.
 Qed.
 
-(* Q8-2 *)
+(* Q7-2 *)
 Lemma eq_eqb n m : n = m -> (n =? m) = true.
 Proof.
 move => H1.
@@ -329,7 +238,7 @@ move => ->.
 by induction m.
 Qed.
 
-(* Q8-3 *)
+(* Q7-3 *)
 Theorem eqb_eq n m : (n =? m) = true -> n = m.
 Proof.
 move : m.
@@ -361,7 +270,7 @@ Qed.
 
 Axiom classic : forall P : Prop, P \/ ~ P.
 
-(* Q9-1 *)
+(* Q8-1 *)
 Theorem Peirce P : (~ P -> P) -> P.
 Proof.
 case (classic P) => //.
@@ -369,7 +278,7 @@ move => np H1.
 by apply H1.
 Qed.
 
-(* Q9-2 *)
+(* Q8-2 *)
 Theorem not_and_or P Q : ~ (P /\ Q) <-> ~ P \/ ~ Q.
 Proof.
 split => [ H1 | H1 H2 ].
@@ -382,7 +291,7 @@ split => [ H1 | H1 H2 ].
   by case H1 => [ np | nq ].
 Qed.
 
-(* Q9-3 *)
+(* Q8-3 *)
 Theorem not_or_and P Q : ~ (P \/ Q) <-> ~ P /\ ~ Q.
 Proof.
 split => [ H1 | H1 H2 ].
@@ -393,6 +302,277 @@ split => [ H1 | H1 H2 ].
   by case H2.
 Qed.
 
+Require Import Coq.Lists.List.
+Import Coq.Lists.List.ListNotations.
+
+Module Section2.
+
+Fixpoint length (l : list nat) := 
+  match l with
+  | nil => 0
+  | cons _ l' => S (length l')
+  end.
+
+Fixpoint append (l : list nat) (n : nat) :=
+  match l with
+  | nil => cons n nil
+  | cons head l' => cons head (append l' n)
+  end.
+
+(* Q9-1 *)
+Fixpoint reverse (l : list nat) :=
+  match l with
+    | nil => nil
+    | cons n l' => append (reverse l') n
+  end.
+
+(* Q9-2 少し複雑な関数を定義する問題 *)
+Fixpoint list_at (l : list nat) (n : nat) := 
+  match l with
+  | nil => 0
+  | cons h l' =>
+    match n with
+    | 0 => h
+    | S n' => list_at l' n'
+    end
+  end.
+
+Fixpoint last (l : list nat) :=
+  match l with
+  | nil => 0
+  | cons n1 nil => n1
+  | cons n1 (cons n2 l' as tail) => last tail
+  end.
+
+(* Q9-3 リストに関する関数の性質を証明する問題 *)
+Theorem cons_length l n : length (cons n l) = S (length l).
+Proof.
+by rewrite /=.
+Qed.
+
+Theorem length_append_succ l n : length (append l n) = S (length l).
+Proof.
+induction l.
+- by [].
+- rewrite /=.
+  by rewrite IHl.
+Qed.
+
+Theorem append_neq_nil l n : append l n <> nil.
+Proof.
+move => H1.
+case_eq l.
+- move => H2.
+  rewrite H2 in H1.
+  by rewrite /= in H1.
+- move => n' l' H2.
+  rewrite H2 in H1.
+  by rewrite /= in H1.
+Restart.
+by case_eq l.
+Qed.
+
+(* Q9-4 リストに関する関数について帰納法を使って証明する *)
+Theorem last_append l n : last (append l n) = n.
+Proof.
+induction l.
+- by rewrite /=.
+- rewrite /=.
+  case_eq (append l n).
+  + move => H1.
+    by apply append_neq_nil in H1.
+  + move=> n' l' H1.
+    by rewrite H1 in IHl.
+Restart.
+induction l => //.
+rewrite /=.
+case_eq (append l n) => [ H1 | n' l' H1 ].
+- by apply append_neq_nil in H1.
+- by rewrite H1 in IHl.
+Qed.
+
+(* Q9-5 *)
+Theorem list_at_pred_length_eq_last l : list_at l (pred (length l)) = last l.
+Proof.
+induction l.
+- by rewrite /=.
+- rewrite /=.
+  rewrite -IHl.
+  case l.
+  + by rewrite /=.
+  + by rewrite /=.
+Restart.
+induction l => //.
+rewrite /=.
+rewrite -IHl.
+by case l.
+Qed.
+
+(* Q9-6 *)
+Theorem reverse_length l : length (reverse l) = length l.
+Proof.
+induction l.
+- by rewrite /=.
+- rewrite /=.
+  rewrite length_append_succ.
+  by rewrite IHl.
+Restart.
+induction l => //=.
+by rewrite length_append_succ IHl.
+Qed.
+
+(* Q9-7 *)
+Theorem reverse_reverse l : reverse (reverse l) = l.
+Proof.
+induction l.
+- by [].
+- rewrite -{2}IHl.
+  rewrite /=.
+  clear IHl.
+  induction (reverse l).
+  + by rewrite /=.
+  + rewrite /=.
+    rewrite IHl0.
+    by rewrite /=.
+Restart.
+induction l => //=.
+rewrite -{2}IHl.
+clear IHl.
+move : (reverse l) => rev.
+induction rev => //=.
+by rewrite IHrev.
+Qed.
+
+End Section2.
+
+Require Import Recdef FunInd Coq.Lists.List Coq.Arith.Wf_nat Coq.Arith.PeanoNat Coq.Arith.Lt.
+Import Coq.Lists.List.ListNotations Coq.Arith.PeanoNat.Nat.
+(* Listの記法については https://coq.inria.fr/doc/V8.19.0/stdlib/Coq.Lists.List.html を見てください *)
+
+(* Q10-1 *)
+Fixpoint sorted (l : list nat) : Prop :=
+  match l with
+  | [] => True
+  | x1 :: xs1 => (forall x, In x xs1 -> x1 <= x) /\ sorted xs1
+    (* この方が累積帰納法と相性が良いため *)
+  end.
+
+(* Q10-2 *)
+Lemma length_filter {A: Type} : forall (xs: list A) f,
+  length (filter f xs) <= length xs.
+Proof.
+move => xs f.
+induction xs => //=.
+case (f a) => /=.
+- by rewrite -Nat.succ_le_mono.
+- by apply Nat.le_le_succ_r.
+Qed.
+
+(* Q10-2 *)
+Function quick_sort (xs: list nat) {measure length}: list nat :=
+  match xs with
+  | [] => []
+  | pivot :: xs1 =>
+    let right := filter (fun x => x <? pivot) xs1 in
+    let left := filter (fun x => pivot <=? x) xs1 in
+      quick_sort right ++ pivot :: (quick_sort left)
+  end.
+Proof.
+- move => xs pivot xs1 Hxs /=.
+  apply Nat.lt_succ_r.
+  by apply length_filter.
+- move => xs pivot xs1 Hxs /=.
+  apply Nat.lt_succ_r.
+  by apply length_filter.
+Qed.
+
+(* Q10-3 *)
+Lemma quick_sort_nil : quick_sort nil = nil.
+Proof.
+by rewrite quick_sort_equation.
+Qed.
+
+(* Q10-4 *)
+Lemma quick_sort_single x1 : quick_sort [x1] = [x1].
+Proof.
+rewrite quick_sort_equation.
+by rewrite quick_sort_nil.
+Qed.
+
+(* Q10-5 *)
+Lemma filter_negb_In {A: Type}: forall xs (x: A) f g,
+  In x xs ->
+  (forall x', g x' = negb (f x')) ->
+  In x (filter f xs) \/ In x (filter g xs).
+Proof.
+move => xs x f g Hxin.
+case_eq (f x) => /= Hfx.
+- left.
+  rewrite filter_In.
+  by split.
+- right.
+  rewrite filter_In.
+  split => //=.
+  by rewrite H Bool.negb_true_iff.
+Qed.
+
+(* Q10- *)
+Lemma quick_sort_In_ind xs x :
+  (forall xs', length xs' < length xs -> (In x xs' <-> In x (quick_sort xs'))) ->
+  (In x xs <-> In x (quick_sort xs)).
+Proof.
+move => Hquick_sort_In_length.
+split => [ Hinx | ].
+- case_eq xs => [ H | x1 xs1 Hxs ].
+    by rewrite H in Hinx.
+  rewrite quick_sort_equation.
+  remember (quick_sort (filter (fun x0 => x0 <? x1) xs1)) as left.
+  remember (quick_sort (filter (fun x0 => x1 <=? x0) xs1)) as right.
+  rewrite in_app_iff /=.
+  rewrite or_comm or_assoc.
+  rewrite Hxs /= in Hinx.
+  case Hinx => H1.
+    by left.
+  right.
+  rewrite Heqleft Heqright.
+  rewrite -Hquick_sort_In_length.
+  * rewrite -Hquick_sort_In_length.
+    -- apply filter_negb_In => // x'.
+       by apply leb_antisym.
+    -- rewrite Hxs /=.
+       by apply /le_lt_n_Sm /length_filter.
+  * rewrite Hxs /=.
+    by apply /le_lt_n_Sm /length_filter.
+- rewrite quick_sort_equation.
+  case_eq xs => //= x1 xs1 Hxs.
+  remember (quick_sort (filter (fun x0 => x0 <? x1) xs1)) as left.
+  remember (quick_sort (filter (fun x0 => x1 <=? x0) xs1)) as right.
+  rewrite in_app_iff.
+  case => /= Hinx.
+  + rewrite Heqleft in Hinx.
+    rewrite -Hquick_sort_In_length in Hinx.
+    * rewrite filter_In in Hinx.
+      case Hinx => H _.
+      by right.
+    * rewrite Hxs /=.
+      by apply /le_lt_n_Sm /length_filter.
+  + case Hinx => H1.
+      by left.
+    rewrite Heqright in H1.
+    rewrite -Hquick_sort_In_length in H1.
+    * rewrite filter_In in H1.
+      case H1 => H2 _.
+      by right.
+    * rewrite Hxs /=.
+      by apply /le_lt_n_Sm /length_filter.
+Qed.
+
+(* Q10- *)
+Theorem quick_sort_sorted xs :
+  sorted (quick_sort xs).
+Proof.
+apply (lt_wf_ind (length xs) (fun len => forall xs, len = length xs -> sorted (quick_sort xs))) => //.
+move=> n Hind xs' Hlen.
 
 
 

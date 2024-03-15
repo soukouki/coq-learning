@@ -607,10 +607,10 @@ Proof.
 move => Hsorted_quick_sort.
 case_eq xs. 
   by rewrite quick_sort_nil.
-move => x1 xs1 Hxs.
+move => pivot xs1 Hxs.
 rewrite quick_sort_equation.
-remember (quick_sort (filter (fun x0 => x0 <? x1) xs1)) as left.
-remember (quick_sort (filter (fun x0 => x1 <=? x0) xs1)) as right.
+remember (quick_sort (filter (fun x0 => x0 <? pivot) xs1)) as left.
+remember (quick_sort (filter (fun x0 => pivot <=? x0) xs1)) as right.
 case_eq left.
 - rewrite /=.
   split => [ x | ].
@@ -629,7 +629,7 @@ case_eq left.
   (* headはそれ以外の要素のどれよりも小さいことを示す *)
   + rewrite in_app_iff.
     case => [ Hin_left | Hin_right ].
-    * suff: sorted (head :: left).
+    * suff : sorted (head :: left).
         rewrite /=.
         case => H _.
         by apply H.
@@ -637,14 +637,14 @@ case_eq left.
       apply Hsorted_quick_sort.
       rewrite Hxs /=.
       by apply /le_lt_n_Sm /length_filter.
-    * have: In head (head :: left) -> head <= x1 => [ | Hhead_le_x1 ].
+    * have : In head (head :: left) -> head <= pivot => [ | Hhead_le_x1 ].
         rewrite -Heqleft.
         rewrite -quick_sort_In.
         rewrite filter_In.
         case => _.
         rewrite ltb_lt.
         by apply lt_le_incl.
-      have: x1 = x \/ In x right.
+      have : pivot = x \/ In x right.
         by move : Hin_right.
       clear Hin_right.
       case => [ H | ].
@@ -661,7 +661,7 @@ case_eq left.
         by apply in_eq.
   (* head以外の要素がソートされていることを示す *)
   + apply sorted_app.
-    * suff: sorted (head :: left).
+    * suff : sorted (head :: left).
         rewrite /=.
         by case.
       rewrite -Heqleft.
@@ -679,7 +679,7 @@ case_eq left.
          by apply /le_lt_n_Sm /length_filter.
     * move => lx rx Hlx Hrx.
       rewrite /le.
-      apply (le_trans lx x1 rx).
+      apply (le_trans lx pivot rx).
       -- subst.
          have : In lx (head :: left).
            rewrite /=.

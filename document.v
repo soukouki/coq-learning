@@ -43,7 +43,7 @@ fun <名前>  => <式> でラムダ式を定義できます
 Definition A_to_A : A -> A := fun a  => a.
 
 (* Q1-1 問題はこの形式で書かれているので、末尾のカンマとAdmittedを消して穴埋め部分を埋めてください *)
-Definition admitted_sample : A -> A.
+Definition func_sample : A -> A.
 Admitted.
 
 (* Q1-2 *)
@@ -127,7 +127,7 @@ Admitted.
 Definition or_comm' : A \/ B -> B \/ A.
 Admitted.
 
-(* Q2-6 使わない項がある問題 *)
+(* Q2-6 *)
 Definition and_to_or : A /\ B -> A \/ B.
 Admitted.
 
@@ -143,7 +143,7 @@ TheoremはDefinitionと違い式を直接書けませんが、定理を証明す
  *)
 
 Theorem A_to_A' : A -> A.
-Proof. (* Proofコマンドは特に効果はありませんが、慣習的に書くことになっています。 *)
+Proof. (* Proofコマンドは特に効果はありませんが、慣例的に書くことになっています。 *)
 move => a. (* move =>タクティックは、ゴールエリアの仮定をコンテキストエリアに移動します *)
 exact a. (* exactタクティックは、ゴールエリアの型をもつ式を書くことで、証明を終了できます。 *)
 Qed.
@@ -265,7 +265,7 @@ reflexivity. (* 両辺が等しいときにはreflexivityタクティックを�
 Restart.
 move => H1.
 by rewrite H1.
-(* byを前に付けると証明をある程度自動で進めてくれます。また、SSReflectではゴールを解決したタイミングでbyを付けるようにすることが多いです *)
+(* byを前に付けると証明をある程度自動で進めてくれます。また、SSReflectではゴールを解決したタイミングでbyを付け、証明が壊れるのを防ぐようになっています *)
 Qed.
 
 (* Q5-1 *)

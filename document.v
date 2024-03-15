@@ -1,7 +1,7 @@
 (*
 # Coq勉強会の資料
 
-タクティックの基礎からクイックソートの証明までを10ステップ47問にまとめました
+タクティックの基礎からクイックソートの証明までを10ステップ46問にまとめました
 各ステップはgraph.pngの依存関係があります
 各問題はanswer.vに解答があります
 
@@ -632,11 +632,6 @@ Proof.
 Admitted.
 
 (* Q10-5 *)
-Lemma quick_sort_single x1 : quick_sort [x1] = [x1].
-Proof.
-Admitted.
-
-(* Q10-6 *)
 Lemma filter_negb_In {A: Type}: forall xs (x: A) f g,
   In x xs ->
   (forall x', g x' = negb (f x')) ->
@@ -644,7 +639,7 @@ Lemma filter_negb_In {A: Type}: forall xs (x: A) f g,
 Proof.
 Admitted.
 
-(* Q10-7 *)
+(* Q10-6 *)
 Lemma sorted_app l r :
   sorted l -> sorted r -> (forall lx rx, In lx l -> In rx r -> lx <= rx) ->
   sorted (l ++ r).
@@ -652,32 +647,32 @@ Proof.
 Admitted.
 
 (* 
-便利タクティック
+便利なタクティック
 - remember <式> as <名前> はゴールやコンテキスト中の式をくくりだして、証明を見やすくできます
 - subst はコンテキストにある等式を自動で使用し、最小限の変数で表せるように展開します
  *)
 
-(* Q10-8 *)
+(* Q10-7 *)
 Lemma quick_sort_In_ind xs x :
   (forall xs', length xs' < length xs -> (In x xs' <-> In x (quick_sort xs'))) ->
   (In x xs <-> In x (quick_sort xs)).
 Proof.
 Admitted.
 
-(* Q10-9 *)
+(* Q10-8 *)
 Lemma quick_sort_In xs x :
   In x xs <-> In x (quick_sort xs).
 Proof.
 Admitted.
 
-(* Q10-10 *)
+(* Q10-9 *)
 Lemma quick_sort_sorted_length_ind xs :
   (forall xs', length xs' < length xs -> sorted (quick_sort xs')) ->
   sorted (quick_sort xs).
 Proof.
 Admitted.
 
-(* Q10-11 *)
+(* Q10-10 *)
 Theorem quick_sort_sorted xs :
   sorted (quick_sort xs).
 Proof.
@@ -690,13 +685,3 @@ Admitted.
 Twitter : @sou7___ (アンダーバー3つ)
 ActivityHub : @sou7@misskey.io
  *)
-
-
-
-
-
-
-
-
-
-

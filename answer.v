@@ -493,13 +493,6 @@ by rewrite quick_sort_equation.
 Qed.
 
 (* Q10-5 *)
-Lemma quick_sort_single x1 : quick_sort [x1] = [x1].
-Proof.
-rewrite quick_sort_equation.
-by rewrite quick_sort_nil.
-Qed.
-
-(* Q10-6 *)
 Lemma filter_negb_In xs (x : nat) f g :
   In x xs ->
   (forall x', g x' = negb (f x')) ->
@@ -516,7 +509,7 @@ case_eq (f x) => /= Hfx.
   by rewrite H Bool.negb_true_iff.
 Qed.
 
-(* Q10-7 *)
+(* Q10-6 *)
 Lemma sorted_app l r :
   sorted l -> sorted r -> (forall lx rx, In lx l -> In rx r -> lx <= rx) ->
   sorted (l ++ r).
@@ -540,7 +533,7 @@ split.
     by right.
 Qed.
 
-(* Q10-8 *)
+(* Q10-7 *)
 Lemma quick_sort_In_ind xs x :
   (forall xs', length xs' < length xs -> (In x xs' <-> In x (quick_sort xs'))) ->
   (In x xs <-> In x (quick_sort xs)).
@@ -594,7 +587,7 @@ Qed.
 Definition length_quick_sort_In(l: nat) :=
   forall xs x, l = length xs -> In x xs <-> In x (quick_sort xs).
 
-(* Q10-9 *)
+(* Q10-8 *)
 Lemma quick_sort_In xs x :
   In x xs <-> In x (quick_sort xs).
 Proof.
@@ -606,7 +599,7 @@ move => xs2 Hxs2.
 by apply (Hlength_lt_In (length xs2)).
 Qed.
 
-(* Q10-10 *)
+(* Q10-9 *)
 Lemma quick_sort_sorted_length_ind xs :
   (forall xs', length xs' < length xs -> sorted (quick_sort xs')) ->
   sorted (quick_sort xs).
@@ -710,7 +703,7 @@ Qed.
 Definition length_quick_sort_sorted (l: nat) :=
   forall xs, l = length xs -> sorted (quick_sort xs).
 
-(* Q10-11 *)
+(* Q10-10 *)
 Theorem quick_sort_sorted xs :
   sorted (quick_sort xs).
 Proof.

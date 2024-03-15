@@ -630,17 +630,17 @@ Function quick_sort (xs: list nat) {measure length}: list nat :=
 Proof.
 Admitted.
 
-(* Q10-3 Functionコマンドでquick_sort_equationが定義されるので、それを使いましょう *)
+(* Q10-4 Functionコマンドでquick_sort_equationが定義されるので、それを使いましょう *)
 Lemma quick_sort_nil : quick_sort nil = nil.
 Proof.
 Admitted.
 
-(* Q10-4 *)
+(* Q10-5 *)
 Lemma quick_sort_single x1 : quick_sort [x1] = [x1].
 Proof.
 Admitted.
 
-(* Q10-5 *)
+(* Q10-6 *)
 Lemma filter_negb_In {A: Type}: forall xs (x: A) f g,
   In x xs ->
   (forall x', g x' = negb (f x')) ->
@@ -649,7 +649,7 @@ Proof.
 Admitted.
 
 (* 
-未紹介の便利タクティック
+便利タクティック
 - remember <式> as <名前> はゴールやコンテキスト中の式をくくりだして、証明を見やすくできます
 - subst はコンテキストにある等式を自動で使用し、最小限の変数で表せるように展開します
  *)

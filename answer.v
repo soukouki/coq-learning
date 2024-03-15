@@ -1,6 +1,6 @@
 (* 
 # Coq勉強会の解答
-問題でどのようなことを説いているのかも解説する
+問題でどのようなことを説いているのかも解説します
  *)
 From mathcomp Require Import ssreflect.
 

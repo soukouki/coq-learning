@@ -1,6 +1,10 @@
 (*
 # Coq勉強会の資料
 
+タクティックの基礎からクイックソートの証明までを10ステップ47問にまとめました
+各ステップはgraph.pngの依存関係があります
+各問題はanswer.vに解答があります
+
 ## 想定読者
 
 強い静的型付けが行われる関数型プログラミングに慣れた方
@@ -10,7 +14,7 @@
 
 基本的なSSReflectのタクティックの機能を使って証明できる
 簡単なInductiveの定義を見て理解できる
-マージソートの形式化の証明ができる
+クイックソート程度の証明ができる
 
 ## 扱わない内容
 
@@ -586,19 +590,11 @@ Admitted.
 
 End Section2.
 
-(* 
-説明してないが重要なタクティック
-have :
-suff :
-rewriteの{}を使った置換の指定
-rewriteの[]を使った置換の指定
- *)
-
 
 (* 
 *** ステップ10 ***
 
-ここまでお疲れ様でした。ここからはラストスパート、ソートの形式化に突き進んでいきましょう
+ここまでお疲れ様でした。ここからはラストスパート、クイックソートがソートできることを示してみましょう
  *)
 Require Import Recdef FunInd Coq.Lists.List Coq.Arith.Wf_nat Coq.Arith.PeanoNat Coq.Arith.Lt.
 Import Coq.Lists.List.ListNotations Coq.Arith.PeanoNat.Nat.
@@ -648,29 +644,52 @@ Lemma filter_negb_In {A: Type}: forall xs (x: A) f g,
 Proof.
 Admitted.
 
+(* Q10-7 *)
+Lemma sorted_app l r :
+  sorted l -> sorted r -> (forall lx rx, In lx l -> In rx r -> lx <= rx) ->
+  sorted (l ++ r).
+Proof.
+Admitted.
+
 (* 
 便利タクティック
 - remember <式> as <名前> はゴールやコンテキスト中の式をくくりだして、証明を見やすくできます
 - subst はコンテキストにある等式を自動で使用し、最小限の変数で表せるように展開します
  *)
 
-(* Q10- *)
+(* Q10-8 *)
 Lemma quick_sort_In_ind xs x :
   (forall xs', length xs' < length xs -> (In x xs' <-> In x (quick_sort xs'))) ->
   (In x xs <-> In x (quick_sort xs)).
 Proof.
 Admitted.
 
-(* Q10- *)
-Theorem quick_sort_sorted: forall xs,
+(* Q10-9 *)
+Lemma quick_sort_In xs x :
+  In x xs <-> In x (quick_sort xs).
+Proof.
+Admitted.
+
+(* Q10-10 *)
+Lemma quick_sort_sorted_length_ind xs :
+  (forall xs', length xs' < length xs -> sorted (quick_sort xs')) ->
   sorted (quick_sort xs).
 Proof.
 Admitted.
 
+(* Q10-11 *)
+Theorem quick_sort_sorted xs :
+  sorted (quick_sort xs).
+Proof.
+Admitted.
 
+(* 
+おつかれさまでした
+ここまで証明できた方はぜひ感想を教えてもらえると嬉しいです
 
-
-
+Twitter : @sou7___ (アンダーバー3つ)
+ActivityHub : @sou7@misskey.io
+ *)
 
 
 

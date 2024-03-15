@@ -611,132 +611,116 @@ Lemma quick_sort_sorted_length_ind xs :
   (forall xs', length xs' < length xs -> sorted (quick_sort xs')) ->
   sorted (quick_sort xs).
 Proof.
-move=> Hsorted_quick_sort.
+move => Hsorted_quick_sort.
 case_eq xs. 
   by rewrite quick_sort_nil.
-move=> x1 xs1 Hxs.
+move => x1 xs1 Hxs.
 rewrite quick_sort_equation.
-have: length xs = S (length xs1).
-  by rewrite Hxs /=.
-move=> Hxs_length.
-remember (quick_sort (filter (fun x : nat => x1 <=? x) xs1)) as right.
-case_eq (quick_sort (filter (fun x : nat => x <? x1) xs1)).
+remember (quick_sort (filter (fun x0 => x0 <? x1) xs1)) as left.
+remember (quick_sort (filter (fun x0 => x1 <=? x0) xs1)) as right.
+case_eq left.
 - rewrite /=.
-  split.
-  + rewrite Heqright.
-    move=> x.
-    rewrite -quick_sort_In.
-    rewrite filter_In.
+  split => [ x | ].
+  + rewrite Heqright -quick_sort_In filter_In.
     case.
-    move=> _.
     by rewrite Nat.leb_le.
   + rewrite Heqright.
     apply Hsorted_quick_sort.
-    rewrite Hxs_length.
+    subst => /=.
     by apply /le_lt_n_Sm /length_filter.
 (* (head :: left) ++ x1 :: right *)
-- move=> head left Heqleft.
-  rewrite /=.
-  split.
-  + move=> x.
-    rewrite in_app_iff.
-    case.
-    * move=> Hinx_left.
-      suff: sorted (head :: left).
+- rewrite Heqleft.
+  clear Heqleft left.
+  move=> head left Heqleft /=.
+  split => [ x | ].
+  (* headはそれ以外の要素のどれよりも小さいことを示す *)
+  + rewrite in_app_iff.
+    case => [ Hin_left | Hin_right ].
+    * suff: sorted (head :: left).
         rewrite /=.
-        case.
-        move=> H _.
-        by apply (H x).
+        case => H _.
+        by apply H.
       rewrite -Heqleft.
       apply Hsorted_quick_sort.
-      rewrite Hxs_length.
+      rewrite Hxs /=.
       by apply /le_lt_n_Sm /length_filter.
-    * move=> Hin_right.
-      have: x1 = x \/ In x right.
-        move: Hin_right.
-        by rewrite /=.
-      clear Hin_right.
-      have: In head (head :: left) -> head <= x1.
+    * have: In head (head :: left) -> head <= x1 => [ | Hhead_le_x1 ].
         rewrite -Heqleft.
         rewrite -quick_sort_In.
         rewrite filter_In.
         case => _.
         rewrite ltb_lt.
         by apply lt_le_incl.
-      move=> Hhead_le_x1.
-      case.
-      - move=> H; rewrite -H; clear H.
+      have: x1 = x \/ In x right.
+        by move : Hin_right.
+      clear Hin_right.
+      case => [ H | ].
+      - subst.
         apply Hhead_le_x1.
-        apply in_eq.
+        by apply in_eq.
       - rewrite Heqright.
         rewrite -quick_sort_In.
         rewrite filter_In.
         case => _.
-        rewrite Nat.leb_le.
-        apply Nat.le_trans.
+        rewrite leb_le.
+        apply le_trans.
         apply Hhead_le_x1.
         by apply in_eq.
+  (* head以外の要素がソートされていることを示す *)
   + apply sorted_app.
     * suff: sorted (head :: left).
         rewrite /=.
         by case.
       rewrite -Heqleft.
-      apply: Hsorted_quick_sort.
-      rewrite Hxs_length.
+      apply Hsorted_quick_sort.
+      rewrite Hxs /=.
       by apply /le_lt_n_Sm /length_filter.
-    * rewrite Heqright.
-      rewrite /sorted -/sorted.
-      split.
-      - move=> x.
-        rewrite -quick_sort_In.
-        rewrite filter_In.
-        case.
-        by rewrite Nat.leb_le.
-      - apply: Hsorted_quick_sort.
-        rewrite Hxs_length.
-        by apply /le_lt_n_Sm /length_filter.
-    * move=> lx rx Hlx Hrx.
-      move: Nat.le_trans => H.
-      apply (H _ x1 _); clear H.
-      - suff: In lx (head :: left) -> lx <= x1.
-          apply.
-          rewrite /=.
-          by right.
-        rewrite -Heqleft.
-        rewrite -quick_sort_In.
-        rewrite filter_In.
-        case.
-        move=> _.
-        rewrite ltb_lt.
-        by apply lt_le_incl.
-      - move: Hrx.
-        rewrite /=.
-        case.
-          move=> H; by rewrite H.
-        rewrite Heqright.
-        rewrite -quick_sort_In.
-        rewrite filter_In.
-        case.
-        move=> _.
-        by rewrite leb_le.
+    * rewrite Heqright /=.
+      split => [ x | ].
+      -- rewrite -quick_sort_In.
+         rewrite filter_In.
+         case => _.
+         by rewrite leb_le.
+      -- apply Hsorted_quick_sort.
+         rewrite Hxs /=.
+         by apply /le_lt_n_Sm /length_filter.
+    * move => lx rx Hlx Hrx.
+      rewrite /le.
+      apply (le_trans lx x1 rx).
+      -- subst.
+         have : In lx (head :: left).
+           rewrite /=.
+           by right.
+         rewrite -Heqleft.
+         rewrite -quick_sort_In.
+         rewrite filter_In.
+         case => _.
+         rewrite ltb_lt.
+         by apply lt_le_incl.
+      -- rewrite /= in Hrx.
+         case Hrx => /= [ H | ].
+           by rewrite H.
+         rewrite Heqright.
+         rewrite -quick_sort_In.
+         rewrite filter_In.
+         case => _.
+         by rewrite leb_le.
 Qed.
 
-Definition length_quick_sort_sorted(l: nat) :=
+Definition length_quick_sort_sorted (l: nat) :=
   forall xs, l = length xs -> sorted (quick_sort xs).
 
 (* Q10-11 *)
-Theorem quick_sort_sorted: forall xs,
+Theorem quick_sort_sorted xs :
   sorted (quick_sort xs).
 Proof.
-move=> xs.
-apply (lt_wf_ind (length xs) length_quick_sort_sorted) => //.
-move=> len.
+apply (lt_wf_ind (length xs) length_quick_sort_sorted) => // len.
 rewrite /length_quick_sort_sorted.
-move=> Hlength_lt_sorted xs1 Hxs1_length.
+move => Hlength_lt_sorted xs1 Hxs1_length.
 subst.
 apply quick_sort_sorted_length_ind.
-move=> xs2 Hxs2_length.
-apply (Hlength_lt_sorted (length xs2)) => //.
+move => xs2 Hxs2_length.
+by apply (Hlength_lt_sorted (length xs2)).
 Qed.
 
 

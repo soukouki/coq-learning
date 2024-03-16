@@ -1,7 +1,7 @@
 (*
 # Coq勉強会の資料
 
-タクティックの基礎からクイックソートの証明までを10ステップ46問にまとめました
+タクティックの基礎からクイックソートの証明までを10ステップ47問にまとめました
 各ステップはgraph.pngの依存関係があります
 各問題はanswer.vに解答があります
 
@@ -380,7 +380,7 @@ Lemma eq_eqb n m : n = m -> (n =? m) = true.
 Proof.
 Admitted.
 
-Search (_ _ = _ _ -> _ = _). (* 次の問題を解く際にはある定理を使う必要があります *)
+Search (_ = _ -> _ _ = _ _). (* 次の問題を解く際にはある定理を使う必要があります *)
 
 (* Q7-3 *)
 Theorem eqb_eq n m : (n =? m) = true -> n = m.
@@ -395,13 +395,10 @@ split.
 - by apply eq_eqb.
 Qed.
 
-Theorem eqb2_eq2' n : (n =? 2) = true -> n = 2.
+(* Q7-4 *)
+Theorem neq_S n m : S n <> S m -> n <> m.
 Proof.
-by rewrite eq_iff_eqb. (* <->にするとrewriteタクティックを使って式中の値を書き換えることができます *)
-Restart.
-rewrite -eq_iff_eqb. (* また、rewrite -<命題名>とすると逆方向への書き換えができます *)
-by [].
-Qed.
+Admitted.
 
 
 (* 
@@ -578,12 +575,24 @@ Search (length (append _ _)).
 複数並べるとandに、括弧で括って_を使うとパターンマッチによる検索ができます
  *)
 
-(* Q9-7 *)
+(* Q9-6 *)
 Theorem reverse_length l : length (reverse l) = length l.
 Proof.
 Admitted.
 
-(* Q9-8 *)
+(* 
+いろいろなrewrite
+rewrite succ_plus. (* ゴールエリアをsucc_plusで置き換えます *)
+rewrite -succ_plus. (* ゴールエリアを逆向きに置き換えます *)
+rewrite succ_plus in G. (* 仮定Gを置き換えます *)
+rewrite {2}succ_plus. (* ゴールエリア中の2箇所目を置き換えます *)
+rewrite [a + b]plus_comm. (* a + bの箇所を置き換えます *)
+rewrite [a + _]plus_comm. (* a + _の形の箇所を置き換えます *)
+rewrite /plus. (* plusを展開します *)
+rewrite /=. (* 簡単な等式変形を行います *)
+ *)
+
+(* Q9-7 *)
 Theorem reverse_reverse l : reverse (reverse l) = l.
 Proof.
 Admitted.

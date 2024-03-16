@@ -268,6 +268,29 @@ induction n => m H1.
     by subst.
 Qed.
 
+(* Q7-4 *)
+Theorem neq_S n m : S n <> S m -> n <> m.
+Proof.
+move => H1 H2.
+apply H1.
+apply f_equal.
+by [].
+Restart.
+move => H1 H2.
+by apply /H1 /f_equal.
+Qed.
+
+(* ボツ問題 *)
+Theorem S_neq n m : n <> m -> S n <> S m.
+Proof.
+move => H1 H2.
+by apply (f_equal pred) in H2.
+Restart.
+move => H1 H2.
+by inversion H2.
+Qed.
+
+
 Axiom classic : forall P : Prop, P \/ ~ P.
 
 (* Q8-1 *)
@@ -553,12 +576,12 @@ split => [ Hinx | ].
   right.
   rewrite Heqleft Heqright.
   rewrite -Hquick_sort_In_length.
-  * rewrite -Hquick_sort_In_length.
-    -- apply filter_negb_In => // x'.
-       by apply leb_antisym.
-    -- rewrite Hxs /=.
-       by apply /le_lt_n_Sm /length_filter.
-  * rewrite Hxs /=.
+  + rewrite -Hquick_sort_In_length.
+    * apply filter_negb_In => // x'.
+      by apply leb_antisym.
+    * rewrite Hxs /=.
+      by apply /le_lt_n_Sm /length_filter.
+  + rewrite Hxs /=.
     by apply /le_lt_n_Sm /length_filter.
 - rewrite quick_sort_equation.
   case_eq xs => //= x1 xs1 Hxs.

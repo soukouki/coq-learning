@@ -284,10 +284,8 @@ Qed.
 Theorem S_neq n m : n <> m -> S n <> S m.
 Proof.
 move => H1 H2.
-by apply (f_equal pred) in H2.
-Restart.
-move => H1 H2.
-by inversion H2.
+apply H1.
+case: H2.
 Qed.
 
 
@@ -660,7 +658,8 @@ case_eq left.
       apply Hsorted_quick_sort.
       rewrite Hxs /=.
       by apply /le_lt_n_Sm /length_filter.
-    * have : In head (head :: left) -> head <= pivot => [ | Hhead_le_x1 ].
+    * have : head <= pivot => [ | Hhead_le_x1 ].
+        move : (in_eq head left).
         rewrite -Heqleft.
         rewrite -quick_sort_In.
         rewrite filter_In.
@@ -670,18 +669,15 @@ case_eq left.
       have : pivot = x \/ In x right.
         by move : Hin_right.
       clear Hin_right.
-      case => [ H | ].
-      - subst.
-        apply Hhead_le_x1.
-        by apply in_eq.
+      case => [ <- | ].
+      - by apply Hhead_le_x1.
       - rewrite Heqright.
         rewrite -quick_sort_In.
         rewrite filter_In.
         case => _.
         rewrite leb_le.
         apply le_trans.
-        apply Hhead_le_x1.
-        by apply in_eq.
+        by apply Hhead_le_x1.
   (* head以外の要素がソートされていることを示す *)
   + apply sorted_app.
     * suff : sorted (head :: left).
@@ -714,13 +710,12 @@ case_eq left.
          rewrite ltb_lt.
          by apply lt_le_incl.
       -- rewrite /= in Hrx.
-         case Hrx => /= [ H | ].
-           by rewrite H.
+         case Hrx => [ -> // | ].
          rewrite Heqright.
          rewrite -quick_sort_In.
          rewrite filter_In.
-         case => _.
-         by rewrite leb_le.
+         rewrite leb_le.
+         by case.
 Qed.
 
 Definition length_quick_sort_sorted (l: nat) :=

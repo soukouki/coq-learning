@@ -572,15 +572,14 @@ split => [ Hinx | ].
   case Hinx => H1.
     by left.
   right.
-  rewrite Heqleft Heqright.
-  rewrite -Hquick_sort_In_length.
-  + rewrite -Hquick_sort_In_length.
-    * apply filter_negb_In => // x'.
-      by apply leb_antisym.
-    * rewrite Hxs /=.
-      by apply /le_lt_n_Sm /length_filter.
-  + rewrite Hxs /=.
+  have : forall f, length (filter f xs1) < length xs => [ f | Hlength_filter ].
+    rewrite Hxs /=.
     by apply /le_lt_n_Sm /length_filter.
+  rewrite Heqright Heqleft.
+  repeat rewrite -Hquick_sort_In_length; (* repeatはタクティックを何度も実行する *)
+    try by apply Hlength_filter. (* 元のゴール+2つの追加されたゴールに対してby applyする。tryなのでエラーが出る方は無視される *)
+  apply filter_negb_In => // x'.
+  apply leb_antisym.
 - rewrite quick_sort_equation.
   case_eq xs => //= x1 xs1 Hxs.
   remember (quick_sort (filter (fun x0 => x0 <? x1) xs1)) as left.

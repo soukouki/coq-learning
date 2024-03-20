@@ -285,7 +285,7 @@ Theorem S_neq n m : n <> m -> S n <> S m.
 Proof.
 move => H1 H2.
 apply H1.
-case: H2.
+by case: H2.
 Qed.
 
 
@@ -423,8 +423,7 @@ induction l.
   + by rewrite /=.
   + by rewrite /=.
 Restart.
-induction l => //.
-rewrite /=.
+induction l => //=.
 rewrite -IHl.
 by case l.
 Qed.
@@ -500,11 +499,9 @@ Function quick_sort (xs: list nat) {measure length}: list nat :=
   end.
 Proof.
 - move => xs pivot xs1 Hxs /=.
-  apply Nat.lt_succ_r.
-  by apply length_filter.
+  by apply /le_lt_n_Sm /length_filter.
 - move => xs pivot xs1 Hxs /=.
-  apply Nat.lt_succ_r.
-  by apply length_filter.
+  by apply /le_lt_n_Sm /length_filter.
 Qed.
 
 (* Q10-4 *)
@@ -732,19 +729,4 @@ apply quick_sort_sorted_length_ind.
 move => xs2 Hxs2_length.
 by apply (Hlength_lt_sorted (length xs2)).
 Qed.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

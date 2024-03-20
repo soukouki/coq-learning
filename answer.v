@@ -130,7 +130,7 @@ case.
 - by case.
 - by case.
 Restart.
-by case => [[] | []]. (* 可読性はかなり悪いが、このような書き方もできる *)
+by case => [ [] | [] ]. (* 可読性はかなり悪いが、このような書き方もできる *)
 Qed.
 
 End Section1.
@@ -143,8 +143,7 @@ rewrite H.
 rewrite /=.
 reflexivity.
 Restart.
-move => H.
-by rewrite H.
+by move => ->.
 Qed.
 
 (* Q5-2 関数を使った命題の証明を問う問題 *)
@@ -154,8 +153,7 @@ rewrite /=.
 move => H.
 by rewrite H.
 Restart.
-move => H.
-by rewrite H.
+by move => ->.
 Qed.
 
 (* Q5-3 existsを使う問題 *)
@@ -169,6 +167,18 @@ Qed.
 Theorem sqrt_5 : exists x, x * x = 25.
 Proof.
 by exists 5.
+Qed.
+
+(* Q5-5 *)
+Theorem exists_sample n : (exists m, n = m + 2 /\ m = 2) -> n = 4.
+Proof.
+case => x.
+case => H1 H2.
+rewrite H1.
+rewrite H2.
+reflexivity.
+Restart.
+by case => x [ -> -> ].
 Qed.
 
 (* Q6-1 inductionを使う問題 *)
@@ -203,9 +213,9 @@ induction n.
   rewrite IHn.
   by rewrite succ_plus.
 Restart.
-induction n.
+induction n => /=.
 - by rewrite n_plus_zero_eq_n.
-- by rewrite /= IHn succ_plus.
+- by rewrite IHn succ_plus.
 Qed.
 
 Require Import Coq.Arith.PeanoNat.
@@ -287,6 +297,10 @@ Qed.
 (* ボツ問題 *)
 Theorem S_neq n m : n <> m -> S n <> S m.
 Proof.
+move => H1 H2.
+apply (f_equal pred) in H2.
+by rewrite /= in H2.
+Restart.
 move => H1 H2.
 apply H1.
 by case: H2.

@@ -286,6 +286,11 @@ Theorem sqrt_5 : exists x, x * x = 25.
 Proof.
 Admitted.
 
+(* また、仮定にexistsが来た場合にはcaseタクティックで分解し値を取り出すことができます *)
+(* Q5-5 *)
+Theorem exists_sample n : (exists m, n = m + 2 /\ m = 2) -> n = 4.
+Proof.
+Admitted.
 
 (* 
 *** ステップ6 ***
@@ -372,7 +377,7 @@ split.
 - by apply eq_eqb.
 Qed.
 
-(* Q7-4 *)
+(* Q7-4 もし余裕があれば、この逆である n <> m -> S n <> S m も証明してみると良いでしょう *)
 Theorem neq_S n m : S n <> S m -> n <> m.
 Proof.
 Admitted.

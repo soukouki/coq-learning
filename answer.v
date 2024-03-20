@@ -8,23 +8,24 @@ Section Section1.
 Variables A B C : Prop.
 
 (* Q1-1 直前のA_to_Aを写経する問題 *)
-Definition admitted_sample : A -> A := fun a  => a.
+Definition admitted_sample : A -> A := fun a => a.
 
 (* Q1-2 ラムダ式を使う問題 *)
-Definition A_to_B_to_A :  A -> B -> A := fun a  => fun b  => a.
-Definition A_to_B_to_A2 : A -> B -> A := fun a b  => a. (* 2引数を同時に受け取ることもできる *)
+Definition A_to_B_to_A :  A -> B -> A := fun a => fun b => a.
+Definition A_to_B_to_A2 : A -> B -> A := fun a b => a. (* 2引数を同時に受け取ることもできる *)
 
 (* Q1-3 関数を含意として使う問題 *)
-Definition modus_ponens : (A -> B) -> A -> B := fun H a  => H a.
+Definition modus_ponens : (A -> B) -> A -> B := fun H a => H a.
 
 (* Q1-4 *)
-Definition imply_trans : (A -> B) -> (B -> C) -> (A -> C) := fun h1 h2 a  => h2 (h1 a).
+Definition imply_trans : (A -> B) -> (B -> C) -> (A -> C) := fun h1 h2 a => h2 (h1 a).
 
 (* Q2-1 直前のパターンマッチの記述を理解しているか問う問題 *)
 Definition and_right : A /\ B -> B :=
-  fun h1 => match h1 with
-    | conj a b  => b
-  end.
+  fun h1 =>
+    match h1 with
+    | conj a b => b
+    end.
 
 (* Q2-2 andを式から組みたてる問題 *)
 Definition A_to_B_to_A_and_B :  A -> B -> A /\ B :=
@@ -32,25 +33,28 @@ Definition A_to_B_to_A_and_B :  A -> B -> A /\ B :=
 
 (* Q2-3 andの総合問題 *)
 Definition and_comm' : A /\ B -> B /\ A :=
-  fun h1 => match h1 with
-    | conj a b  => conj b a
-  end.
+  fun h1 =>
+    match h1 with
+    | conj a b => conj b a
+    end.
 
 (* Q2-4 or_introlとor_introrを理解してるか問う問題 *)
-Definition B_to_A_or_B : B -> A \/ B := fun b  => or_intror b.
+Definition B_to_A_or_B : B -> A \/ B := fun b => or_intror b.
 
 (* Q2-5 orの総合問題 *)
 Definition or_comm' : A \/ B -> B \/ A :=
-  fun H => match H with
-    | or_introl b  => or_intror b
-    | or_intror a  => or_introl a
-  end.
+  fun H =>
+    match H with
+    | or_introl b => or_intror b
+    | or_intror a => or_introl a
+    end.
 
 (* Q2-6 使わない項がある問題 *)
 Definition and_to_or : A /\ B -> A \/ B :=
-  fun H => match H with
+  fun H =>
+    match H with
     | conj a _ => or_introl a
-  end.
+    end.
 
 (* Q3-1 move =>とexactを使う問題 *)
 Theorem A_to_B_to_A' : A -> B -> A.
@@ -328,7 +332,7 @@ Import Coq.Lists.List.ListNotations.
 
 Module Section2.
 
-Fixpoint length (l : list nat) := 
+Fixpoint length (l : list nat) :=
   match l with
   | nil => 0
   | cons _ l' => S (length l')
@@ -343,12 +347,12 @@ Fixpoint append (l : list nat) (n : nat) :=
 (* Q9-1 *)
 Fixpoint reverse (l : list nat) :=
   match l with
-    | nil => nil
-    | cons n l' => append (reverse l') n
+  | nil => nil
+  | cons n l' => append (reverse l') n
   end.
 
 (* Q9-2 少し複雑な関数を定義する問題 *)
-Fixpoint list_at (l : list nat) (n : nat) := 
+Fixpoint list_at (l : list nat) (n : nat) :=
   match l with
   | nil => 0
   | cons h l' =>
@@ -622,7 +626,7 @@ Lemma quick_sort_sorted_length_ind xs :
   sorted (quick_sort xs).
 Proof.
 move => Hsorted_quick_sort.
-case_eq xs. 
+case_eq xs.
   by rewrite quick_sort_nil.
 move => pivot xs1 Hxs.
 rewrite quick_sort_equation.

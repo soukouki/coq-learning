@@ -14,9 +14,9 @@ Variables A B C : Prop.
 
 Definitionで定数を定義します
 A_to_Aという変数はA -> Aという型を持ちます
-fun <名前>  => <式> でラムダ式を定義できます
+fun <名前> => <式> でラムダ式を定義できます
  *)
-Definition A_to_A : A -> A := fun a  => a.
+Definition A_to_A : A -> A := fun a => a.
 
 (* Q1-1 問題はこの形式で書かれているので、末尾のカンマとAdmittedを消して穴埋め部分を埋めてください *)
 Definition func_sample : A -> A.
@@ -48,7 +48,6 @@ Inductive and (A B  : Prop)  : Prop :=  conj  : A -> B -> A /\ B.
 andの定義は上記の通りです。Inductiveは帰納型で、いわゆる代数的データ構造です
 Printコマンド、あるいはCoqIDEではandにカーソルを合わせてCtrl+Shift+Pで定義を確認できます
 Coqでは記法を自由に拡張することができ、A /\ Bと書くことでand A Bと同等のことができます
-
  *)
 
 Print and.
@@ -57,9 +56,10 @@ Inductiveで定義された帰納型は、パターンマッチを用いて分�
 conjは2引数を受け取るので、分解するときには2つの値が出てきます。求める型の値はその2つ目の値なので、それを返すことで証明できます
  *)
 Definition and_left : A /\ B -> A :=
-  fun a_and_b  => match a_and_b with
-    | conj a b  => a
-  end.
+  fun a_and_b =>
+    match a_and_b with
+    | conj a b => a
+    end.
 
 (* Q2-1 *)
 Definition and_right : A /\ B -> B.
@@ -88,12 +88,13 @@ orは2つの枝をもつ帰納型です。パターンマッチするさいに�
  *)
 
 Definition A_or_A_to_A : A \/ A -> A :=
-  fun a_or_a  => match a_or_a with
-    | or_introl ha  => ha
-    | or_intror ha  => ha
-  end.
+  fun a_or_a =>
+    match a_or_a with
+    | or_introl ha => ha
+    | or_intror ha => ha
+    end.
 
-Definition A_to_A_or_B : A -> A \/ B := fun a  => or_introl a.
+Definition A_to_A_or_B : A -> A \/ B := fun a => or_introl a.
 
 (* Q2-4 *)
 Definition B_to_A_or_B : B -> A \/ B.
@@ -197,7 +198,7 @@ move => a.
 apply or_introl. (* applyタクティックでor_introlを直接使うことでも証明できます *)
 exact a.
 Restart.
-exact (fun a  => or_introl a). (* 可読性は悪いですが、このような書き方もできます *)
+exact (fun a => or_introl a). (* 可読性は悪いですが、このような書き方もできます *)
 Qed.
 
 (* Q4-3 *)
@@ -432,7 +433,7 @@ Compute (cons 1 (cons 2 nil)).
 リストの長さを計算する関数です
 再帰関数を定義するときはFixpointコマンドを使います
  *)
-Fixpoint length (l : list nat) := 
+Fixpoint length (l : list nat) :=
   match l with
   | nil => 0
   | cons _ l' => S (length l')

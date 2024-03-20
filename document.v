@@ -289,9 +289,14 @@ Theorem sqrt_5 : exists x, x * x = 25.
 Proof.
 Admitted.
 
-(* また、仮定にexistsが来た場合にはcaseタクティックで分解し値を取り出すことができます *)
+(* また、仮定にexistsが来た場合には、caseタクティックで分解し値を取り出せます *)
 (* Q5-5 *)
-Theorem exists_sample n : (exists m, n = m + 2 /\ m = 2) -> n = 4.
+Theorem exists_sample1 n : (exists m, n = m + 2 /\ m = 2) -> n = 4.
+Proof.
+Admitted.
+
+(* Q5-6 *)
+Theorem exists_sample2 n : (exists m, n = S (S m)) -> (exists l, n = S l).
 Proof.
 Admitted.
 

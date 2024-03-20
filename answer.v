@@ -169,8 +169,8 @@ Proof.
 by exists 5.
 Qed.
 
-(* Q5-5 *)
-Theorem exists_sample n : (exists m, n = m + 2 /\ m = 2) -> n = 4.
+(* Q5-5 仮定にexistsが来るので、それを分解する問題 *)
+Theorem exists_sample1 n : (exists m, n = m + 2 /\ m = 2) -> n = 4.
 Proof.
 case => x.
 case => H1 H2.
@@ -179,6 +179,13 @@ rewrite H2.
 reflexivity.
 Restart.
 by case => x [ -> -> ].
+Qed.
+
+(* Q5-6 仮定のexistsを分解し、更にexistsタクティックを使う問題 *)
+Theorem exists_sample2 n : (exists m, n = S (S m)) -> (exists l, n = S l).
+Proof.
+case => m H1.
+by exists (S m).
 Qed.
 
 (* Q6-1 inductionを使う問題 *)

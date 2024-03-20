@@ -337,8 +337,8 @@ Require Import Coq.Arith.PeanoNat.
 
 Coqでは、真と偽を表すのにbool型の真偽値だけではなく、命題型を使うことができます
 trueとfalseはbool型の値で、TrueとFalseは命題型の型になります
-True型はコンストラクタIを持つ値で、常に作成できます。任意の命題Pに対してP -> Trueは成り立ちます
-False型はコンストラクタを持たない値で、この型を持つ値は存在しません。ところで、この型の値をパターンマッチするとどうなるでしょうか？
+True型はコンストラクタIを持つ型で、常に作成できます。任意の命題Pに対してP -> Trueは成り立ちます
+False型はコンストラクタを持たない型で、この型を持つ値は存在しません。ところで、この型の値をパターンマッチするとどうなるでしょうか？
  *)
 Print bool.
 Print True.
@@ -356,21 +356,26 @@ About False_ind.
 証明している際、仮定が矛盾していることを見つければ、仮定をいじってFalseを導くことで、そこからゴールの型を生成して証明を終わらせられます
  *)
 
-Print not.
+(* 
+=?はbool型の比較関数で、戻り値はbool型の値であるtrueかfalseになります
+Prop | bool
+  =  |  =?
+  <> | (なし)
+  <  |  <?
+  >= |  >=?
+ *)
 
 (* Q7-1 CoqIDEではCtrl+Shift+nでNotationの切り替えができます *)
 Theorem eqb2_eq2 n : (n =? 2) = true -> n = 2.
 Proof.
 Admitted.
 
-(* clearタクティックを使うことで、コンテキストにある仮定や変数を削除できます *)
-
-(* Q7-2 *)
+(* Q7-2 clearタクティックを使うことで、コンテキストにある仮定や変数を削除できます *)
 Lemma eq_eqb n m : n = m -> (n =? m) = true.
 Proof.
 Admitted.
 
-Search (_ = _ -> _ _ = _ _). (* 次の問題を解く際にはある定理を使う必要があります *)
+About f_equal. (* 次の問題を解く際にはこの定理を使う必要があります *)
 
 (* Q7-3 *)
 Theorem eqb_eq n m : (n =? m) = true -> n = m.
@@ -385,10 +390,27 @@ split.
 - by apply eq_eqb.
 Qed.
 
-(* Q7-4 もし余裕があれば、この逆である n <> m -> S n <> S m も証明してみると良いでしょう *)
+(* 
+~ P は not P を表します
+A <> B は not (A = B) を表します
+notの定義は次のようになっています
+ *)
+Print not.
+
+Theorem not_sample : 1 <> 2.
+Proof.
+move => H1.
+by []. (* 1 = 2は明らかに成り立たないのでbyタクティックで自動で証明できる *)
+Qed.
+
+Print not_sample. (* Printで証明を見ると、実際のプログラムがどうなっているか確認できます *)
+
+(* Q7-4 *)
 Theorem neq_S n m : S n <> S m -> n <> m.
 Proof.
 Admitted.
+
+(* もし余裕があれば、この逆である n <> m -> S n <> S m も証明してみると良いでしょう *)
 
 
 (* 

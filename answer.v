@@ -228,7 +228,7 @@ Qed.
 Require Import Coq.Arith.PeanoNat.
 
 (* Q7-1 *)
-Theorem eqb2_eq2 n : (n =? 2) = true -> n = 2.
+Theorem eqb2_eq2 n : (n =? 2) = true -> n = 2.  
 Proof.
 case n.
 - by [].

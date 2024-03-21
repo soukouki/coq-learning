@@ -309,6 +309,7 @@ Theorem mul_one_eq_n n : n * 1 = n.
 Proof.
 move : n. (* move :タクティックを使うことで、コンテキストからゴールへ移動できます *)
 induction n. (* inductionタクティックを使うことで、帰納法を利用できます *)
+(* 複雑な問題では、inductionを使う前にmove :でコンテキストの値や証明をゴールエリアに持ってくることが必要なことがあります *)
 - by [].
 - rewrite /=.
   by rewrite IHn.
@@ -335,15 +336,16 @@ Require Import Coq.Arith.PeanoNat.
 (* 
 *** ステップ7 ***
 
-Coqでは、真と偽を表すのにbool型の真偽値だけではなく、命題型を使うことができます
+Coqにおいて、真と偽を表すのはbool型の真偽値だけではなく、命題型というものもあります
 trueとfalseはbool型の値で、TrueとFalseは命題型の型になります
-True型はコンストラクタIを持つ型で、常に作成できます。任意の命題Pに対してP -> Trueは成り立ちます
-False型はコンストラクタを持たない型で、この型を持つ値は存在しません。ところで、この型の値をパターンマッチするとどうなるでしょうか？
+True型はコンストラクタIを持つ型で、常に作成できます。任意の命題Pに対してP -> Trueという関数(命題)を定義できます
+False型はコンストラクタを持たない型で、この型を持つ値は存在しません。例えばTrue -> Falseという関数(命題)は定義できない、つまりは証明できません
  *)
 Print bool.
 Print True.
 Print False.
 
+(* ところで、False型の値をパターンマッチするとどうなるでしょうか？ *)
 Definition False_nat : False -> nat :=
   fun fals => match fals with
   end.
@@ -357,7 +359,7 @@ About False_ind.
  *)
 
 (* 
-=?はbool型の比較関数で、戻り値はbool型の値であるtrueかfalseになります
+=?はbool型の比較関数で、戻り値はbool型の値であるtrueかfalseになります。その他の比較関数は以下のとおりです
 Prop | bool
   =  |  =?
   <> | (なし)
@@ -382,12 +384,21 @@ Theorem eqb_eq n m : (n =? m) = true -> n = m.
 Proof.
 Admitted.
 
-(* 命題A, Bに対して、A <-> Bという命題はA -> BかつB -> Aを表します *)
+(* 
+命題A, Bに対して、A <-> Bという命題はA -> BかつB -> Aを表します
+ *)
 Theorem eq_iff_eqb n m : (n =? m) = true <-> n = m.
 Proof.
 split.
 - by apply eqb_eq.
 - by apply eq_eqb.
+Qed.
+(* 
+<->(iff)はrewriteタクティックで使うことができます
+ *)
+Theorem eqb2_eq2' n : (n =? 2) = true -> n = 2.
+Proof.
+by rewrite eq_iff_eqb. (* メタ定理を使うことで証明がぐっと短くなりました！ *)
 Qed.
 
 (* 
@@ -529,6 +540,15 @@ induction l.
 - by [].
 - rewrite /=.
   by rewrite IHl.
+Restart.
+induction l => //=.
+(* 
+/=の仲間として//や//=があります
+/= はゴールを書き換えて簡単にします
+// は明らかに成り立つゴールを証明します
+//= は/=と//を合わせた効果を持ちます
+ *)
+by rewrite IHl.
 Qed.
 
 (* 
@@ -594,12 +614,12 @@ Admitted.
 
 (* 
 いろいろなrewrite
-rewrite succ_plus. (* ゴールエリアをsucc_plusで置き換えます *)
-rewrite -succ_plus. (* ゴールエリアを逆向きに置き換えます *)
-rewrite succ_plus in G. (* 仮定Gを置き換えます *)
-rewrite {2}succ_plus. (* ゴールエリア中の2箇所目を置き換えます *)
-rewrite [a + b]plus_comm. (* a + bの箇所を置き換えます *)
-rewrite [a + _]plus_comm. (* a + _の形の箇所を置き換えます *)
+rewrite succ_plus. (* ゴールエリアをsucc_plusで書き換えます *)
+rewrite -succ_plus. (* ゴールエリアを逆向きに書き換えます *)
+rewrite succ_plus in G. (* 仮定Gを書き換えます *)
+rewrite {2}succ_plus. (* ゴールエリア中の2箇所目を書き換えます *)
+rewrite [a + b]plus_comm. (* a + bの箇所を書き換えます *)
+rewrite [a + _]plus_comm. (* a + _の形の箇所を書き換えます *)
 rewrite /plus. (* plusを展開します *)
 rewrite /=. (* 簡単な等式変形を行います *)
  *)

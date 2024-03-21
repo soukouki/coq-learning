@@ -130,7 +130,7 @@ case.
 - by case.
 - by case.
 Restart.
-by case => [ [] | [] ]. (* 可読性はかなり悪いが、このような書き方もできる *)
+by case => [ [ ] | [ ] ]. (* 可読性はかなり悪いが、このような書き方もできる *)
 Qed.
 
 End Section1.
@@ -143,7 +143,7 @@ rewrite H.
 rewrite /=.
 reflexivity.
 Restart.
-by move => ->.
+by move => ->. (* ゴールに対するrewriteはこのようにしても書ける *)
 Qed.
 
 (* Q5-2 関数を使った命題の証明を問う問題 *)

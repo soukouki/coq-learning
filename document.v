@@ -667,6 +667,10 @@ Function quick_sort (xs: list nat) {measure length}: list nat :=
 Proof.
 Admitted.
 
+(* 以下のようにするとCoqのプログラムをOCamlにトランスパイルできます。他にもHaskellやSchemeにトランスパイルできます *)
+Require Import ExtrOcamlBasic ExtrOcamlNatInt Mergesort.
+Extraction "quick_sort.ml" quick_sort.
+
 (* Q10-4 Functionコマンドでquick_sort_equationが定義されるので、それを使いましょう *)
 Lemma quick_sort_nil : quick_sort nil = nil.
 Proof.

@@ -149,9 +149,10 @@ Qed.
 (* Q5-2 関数を使った命題の証明を問う問題 *)
 Theorem rewrite_sample3 n m: n = S m -> pred n = m.
 Proof.
-rewrite /=.
 move => H.
-by rewrite H.
+rewrite H.
+rewrite /=.
+reflexivity.
 Restart.
 by move => ->.
 Qed.
@@ -164,7 +165,7 @@ by exists (n * m).
 Qed.
 
 (* Q5-4 *)
-Theorem sqrt_5 : exists x, x * x = 25.
+Theorem sqrt_25 : exists x, x * x = 25.
 Proof.
 by exists 5.
 Qed.

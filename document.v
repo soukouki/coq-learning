@@ -285,7 +285,7 @@ Proof.
 Admitted.
 
 (* Q5-4 *)
-Theorem sqrt_5 : exists x, x * x = 25.
+Theorem sqrt_25 : exists x, x * x = 25.
 Proof.
 Admitted.
 
@@ -398,7 +398,7 @@ Qed.
  *)
 Theorem eqb2_eq2' n : (n =? 2) = true -> n = 2.
 Proof.
-by rewrite eq_iff_eqb. (* メタ定理を使うことで証明がぐっと短くなりました！ *)
+by rewrite eq_iff_eqb. (* 一般的な定理を使うことで証明がぐっと短くなりました！ *)
 Qed.
 
 (* 
@@ -411,7 +411,7 @@ Print not.
 Theorem not_sample : 1 <> 2.
 Proof.
 move => H1.
-by []. (* 1 = 2は明らかに成り立たないのでbyタクティックで自動で証明できる *)
+by []. (* 1 = 2は明らかに成り立たないので、byタクティックで自動で証明できます *)
 Qed.
 
 Print not_sample. (* Printで証明を見ると、実際のプログラムがどうなっているか確認できます *)
@@ -725,7 +725,7 @@ Admitted.
 
 (* 
 おつかれさまでした
-ここまで証明できた方はぜひ感想を教えてもらえると嬉しいです
+ぜひ感想を教えてもらえると嬉しいです
 
 Twitter : @sou7___ (アンダーバー3つ)
 ActivityHub : @sou7@misskey.io

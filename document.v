@@ -456,6 +456,21 @@ Theorem not_or_and P Q : ~ (P \/ Q) <-> ~ P /\ ~ Q.
 Proof.
 Admitted.
 
+(* 
+そのほかの公理としては、次のようなものがあります
+- Coq.Logic.Description
+  決定的な値取り出し公理、一意に存在する値を取り出すことができます
+- Coq.Logic.IndefiniteDescription
+  非決定的な値取り出し公理、存在する値を取り出すことができます
+- Coq.Logic.FunctionalExtensionality
+  関数の外延性公理、関数の等しさを定義しています
+- Coq.Logic.PropExtensionality
+  命題の外延性公理、命題の等しさを定義しています
+
+詳しくはこの記事が参考になります
+https://qnighy.hatenablog.com/entry/2014/04/22/214515
+ *)
+
 
 Module Section2.
 

@@ -469,6 +469,10 @@ Admitted.
 
 詳しくはこの記事が参考になります
 https://qnighy.hatenablog.com/entry/2014/04/22/214515
+
+また、ClassicとDescriptionを組み合わせた定理もあります
+- Coq.Logic.ClassicalDescriptionのexcluded_middle_informative
+  命題が真になる場合と偽になる場合で処理を分岐します
  *)
 
 

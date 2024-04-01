@@ -18,23 +18,34 @@ fun <名前> => <式> でラムダ式を定義できます
  *)
 Definition A_to_A : A -> A := fun a => a.
 
-(* Q1-1 問題はこの形式で書かれているので、末尾のカンマとAdmittedを消して穴埋め部分を埋めてください *)
+(* Q1-1 問題はこの形式で書かれているので、Admitted.を消して、A_to_Aを参考に入力してください *)
 Definition func_sample : A -> A.
 Admitted.
+(* エラーが出なくなれば、定理が証明できたことになります。おめでとうございます！！ *)
 
 (* Q1-2 *)
 Definition A_to_B_to_A : A -> B -> A.
 Admitted.
+(* Admittedについては後で説明します *)
 
 (*
+A -> B(Aを受取りBを返す関数)は値と同じように扱えます
+つまり、次のmodus_ponensではfun f => fun a => ...とすると引数として受け取れます
 f : A -> B
 a : A
-という型のとき、f aとすることで関数呼び出しを行い、b型の値を得ることができます
+という型のとき、f aとすることで関数呼び出しを行い、B型の値を得ることができます
  *)
 
 (* Q1-3 *)
 Definition modus_ponens : (A -> B) -> A -> B.
 Admitted.
+
+(* 
+関数の->は右結合です。つまり、
+A -> (B -> C) と
+A ->  B -> C  は同じ意味になります
+逆に(A -> B) -> Cは異なる意味になります
+ *)
 
 (* Q1-4 3引数を受け取ることに注意しましょう *)
 Definition imply_trans : (A -> B) -> (B -> C) -> (A -> C).
@@ -44,7 +55,7 @@ Admitted.
 (* 
 *** ステップ2 ***
 
-Inductive and (A B  : Prop)  : Prop :=  conj  : A -> B -> A /\ B.
+Inductive and (A B  : Prop) : Prop := conj : A -> B -> A /\ B.
 andの定義は上記の通りです。Inductiveは帰納型で、いわゆる代数的データ構造です
 Printコマンド、あるいはCoqIDEではandにカーソルを合わせてCtrl+Shift+Pで定義を確認できます
 Coqでは記法を自由に拡張することができ、A /\ Bと書くことでand A Bと同等のことができます
@@ -61,13 +72,23 @@ Definition and_left : A /\ B -> A :=
     | conj a b => a
     end.
 
+(* 
+パターンマッチングの構文は次のようなものです
+bがbool型の値だとすると、
+match b with
+  | true => 1
+  | false => 0
+end
+となります。trueの行が1つ目の枝、falseの行が2つ目の枝になります
+ *)
+
 (* Q2-1 *)
 Definition and_right : A /\ B -> B.
 Admitted.
 
 About conj.
 (* 
-Aboutコマンド、あるいはCoqIDEではconjにカーソルを合わせてCtrl+Shift+Aでどのような型を持っているか確認できます
+Aboutコマンド、あるいはCoqIDEではconjにカーソルを合わせてCtrl+Shift+Aを押すと、どのような型を持っているか確認できます
 conjは、2つの値A, Bを受け取り、A /\ Bを返す関数であることがわかります
  *)
 
@@ -81,10 +102,10 @@ Admitted.
 
 Print or.
 (* 
-Inductive or (A B  : Prop)  : Prop :=
-  | or_introl  : A -> A \/ B
-  | or_intror  : B -> A \/ B.
-orは2つの枝をもつ帰納型です。パターンマッチするさいには2つの枝(or_introl, or_intror)に別れます。
+Inductive or (A B : Prop) : Prop :=
+  | or_introl : A -> A \/ B
+  | or_intror : B -> A \/ B.
+orは2つの枝をもつ帰納型です。パターンマッチする際には2つの枝(or_introl, or_intror)に別れます
  *)
 
 Definition A_or_A_to_A : A \/ A -> A :=
@@ -122,7 +143,7 @@ TheoremはDefinitionと違い式を直接書けませんが、定理を証明す
 Theorem A_to_A' : A -> A.
 Proof. (* Proofコマンドは特に効果はありませんが、慣例的に書くことになっています。 *)
 move => a. (* move =>タクティックは、ゴールエリアの仮定をコンテキストエリアに移動します *)
-exact a. (* exactタクティックは、ゴールエリアの型をもつ式を書くことで、証明を終了できます。 *)
+exact a. (* exactタクティックは、ゴールエリアの型をもつ式を書くことで、証明を終了できます *)
 Qed.
 
 (* Q3-1 *)
@@ -167,6 +188,7 @@ Qed.
 Theorem and_right' : A /\ B -> B.
 Proof.
 Admitted.
+(* ここまで出ていたAdmittedコマンドは、証明を途中で打ち切って証明できたことにするコマンドです *)
 
 Theorem A_to_B_to_A_and_B' : A -> B -> A /\ B.
 Proof.

@@ -1,6 +1,5 @@
 (* 
 # Coq勉強会の解答
-問題でどのようなことを説いているのかも解説します
  *)
 From mathcomp Require Import ssreflect.
 
@@ -11,8 +10,9 @@ Variables A B C : Prop.
 Definition admitted_sample : A -> A := fun a => a.
 
 (* Q1-2 ラムダ式を使う問題 *)
-Definition A_to_B_to_A :  A -> B -> A := fun a => fun b => a.
-Definition A_to_B_to_A2 : A -> B -> A := fun a b => a. (* 2引数を同時に受け取ることもできる *)
+Definition A_to_B_to_A  : A -> B -> A := fun a => fun b => a.
+Definition A_to_B_to_A2 : A -> B -> A := fun a b => a. (* 2引数を同時に受け取ることもできます *)
+Definition A_to_B_to_A3 : A -> B -> A := fun a _ => a. (* 使わない引数はアンダーバーにもできます *)
 
 (* Q1-3 関数を含意として使う問題 *)
 Definition modus_ponens : (A -> B) -> A -> B := fun H a => H a.
@@ -55,6 +55,11 @@ Definition and_to_or : A /\ B -> A \/ B :=
     match H with
     | conj a _ => or_introl a
     end.
+Definition and_to_or2 : A /\ B -> A \/ B :=
+  fun H =>
+    match H with
+    | conj _ b => or_intror b (* この定理はこうも書けます *)
+    end.
 
 (* Q3-1 move =>とexactを使う問題 *)
 Theorem A_to_B_to_A' : A -> B -> A.
@@ -63,8 +68,8 @@ move => a.
 move => b.
 exact a.
 Restart.
-move => a b. (* 2引数を同時に受け取れる *)
-by []. (* byタクティックを使って自動で証明を進められる *)
+move => a b. (* 2引数を同時に受け取れます *)
+by []. (* byタクティックを使って自動で証明を進められます *)
 Qed.
 
 (* Q3-2 applyを使う問題 *)
@@ -75,7 +80,7 @@ apply h1.
 exact a.
 Restart.
 move => h1 h2 a.
-by apply /h2 /h1. (* applyは複数の仮定を同時に渡すこともできる *)
+by apply /h2 /h1. (* applyは複数の仮定を同時に渡すこともできます *)
 Qed.
 
 (* Q4-1 andに対してcaseを使う問題 *)
@@ -114,7 +119,7 @@ case => [ a | b ]. (* このように書くと、複数の枝に分かれるcase
 - by right.
 - by left.
 Restart.
-case => [ a | b ]; by [ right | left ].
+case; by [ right | left ].
 Qed.
 
 (* Q4-4 andとorの総合問題 *)
@@ -130,7 +135,7 @@ case.
 - by case.
 - by case.
 Restart.
-by case => [ [ ] | [ ] ]. (* 可読性はかなり悪いが、このような書き方もできる *)
+by case => [ [ ] | [ ] ]. (* 可読性はかなり悪いが、このような書き方もできます *)
 Qed.
 
 End Section1.
@@ -143,7 +148,7 @@ rewrite H.
 rewrite /=.
 reflexivity.
 Restart.
-by move => ->. (* ゴールに対するrewriteはこのようにしても書ける *)
+by move => ->. (* ゴールに対するrewriteはこのようにしても書けます *)
 Qed.
 
 (* Q5-2 関数を使った命題の証明を問う問題 *)
@@ -419,7 +424,7 @@ Restart.
 by case_eq l.
 Qed.
 
-(* Q9-4 リストに関する関数について帰納法を使って証明する *)
+(* Q9-4 リストに関する関数について帰納法を使って証明します *)
 Theorem last_append l n : last (append l n) = n.
 Proof.
 induction l.
@@ -500,7 +505,7 @@ Fixpoint sorted (l : list nat) : Prop :=
   match l with
   | [] => True
   | x1 :: xs1 => (forall x, In x xs1 -> x1 <= x) /\ sorted xs1
-    (* この方が累積帰納法と相性が良いため *)
+    (* この方が累積帰納法と相性が良いためこの定義にしています。余裕があれば素朴な定義との同値性を示してみると良いでしょう *)
   end.
 
 (* Q10-2 *)

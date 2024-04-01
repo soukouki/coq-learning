@@ -10,7 +10,9 @@
 次のツールをインストールしてください
 1. Coq(本体)
 2. MathComp-SSReflect
-3. CoqIDE(任意)
+3. CoqIDE
+
+インストールできましたら、CoqIDEでdocument.vを開いてください
 
 ## 想定読者
 

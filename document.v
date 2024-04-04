@@ -182,6 +182,10 @@ caseタクティックには=>を付けることで、caseとmove =>を合わせ
 他のタクティックにも=>を付けると同じように動作するものがあります。いろいろ試してみましょう
  *)
 exact ha.
+Restart.
+move => H.
+case H => a b. (* case HとするとHを分解することができます *)
+exact a.
 Qed.
 
 (* Q4-1 *)
@@ -311,7 +315,10 @@ Theorem sqrt_25 : exists x, x * x = 25.
 Proof.
 Admitted.
 
-(* また、仮定にexistsが来た場合には、caseタクティックで分解し値を取り出せます *)
+(* 
+また、仮定にexistsが来た場合には、caseタクティックで分解し値を取り出せます
+ここでcaseが使える理由はPrint exを見るとわかります
+ *)
 (* Q5-5 *)
 Theorem exists_sample1 n : (exists m, n = m + 2 /\ m = 2) -> n = 4.
 Proof.

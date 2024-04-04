@@ -80,7 +80,7 @@ apply h1.
 exact a.
 Restart.
 move => h1 h2 a.
-by apply /h2 /h1. (* applyは複数の仮定を同時に渡すこともできます *)
+by apply /h2 /h1. (* applyは/を使うことで複数の仮定を同時に渡すこともできます *)
 Qed.
 
 (* Q4-1 andに対してcaseを使う問題 *)

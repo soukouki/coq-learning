@@ -317,8 +317,11 @@ Admitted.
 
 (* 
 また、仮定にexistsが来た場合には、caseタクティックで分解し値を取り出せます
-ここでcaseが使える理由はPrint exを見るとわかります
+Print exでexistsの中身を見ると、existsが帰納型として定義されていることがわかります
+帰納型はパターンマッチで分解でき、existsの中身のforall x : A, P xが取り出せるのです
  *)
+Print ex.
+
 (* Q5-5 *)
 Theorem exists_sample1 n : (exists m, n = m + 2 /\ m = 2) -> n = 4.
 Proof.

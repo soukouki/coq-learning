@@ -135,7 +135,7 @@ case.
 - by case.
 - by case.
 Restart.
-by case => [ [ ] | [ ] ]. (* 可読性はかなり悪いが、このような書き方もできます *)
+by case => [ [ ] | [ ] ]. (* 可読性はかなり悪いですが、このような書き方もできます *)
 Qed.
 
 End Section1.
@@ -148,7 +148,7 @@ rewrite H.
 rewrite /=.
 reflexivity.
 Restart.
-by move => ->. (* ゴールに対するrewriteはこのようにしても書けます *)
+by move => ->. (* ゴールに対するrewriteはこのようにも書けます *)
 Qed.
 
 (* Q5-2 関数を使った命題の証明を問う問題 *)
@@ -436,8 +436,7 @@ induction l.
   + move=> n' l' H1.
     by rewrite H1 in IHl.
 Restart.
-induction l => //.
-rewrite /=.
+induction l => //=.
 case_eq (append l n) => [ H1 | n' l' H1 ].
 - by apply append_neq_nil in H1.
 - by rewrite H1 in IHl.
@@ -604,10 +603,10 @@ split => [ Hinx | ].
     rewrite Hxs /=.
     by apply /le_lt_n_Sm /length_filter.
   rewrite Heqright Heqleft.
-  repeat rewrite -Hquick_sort_In_length; (* repeatはタクティックを何度も実行する *)
-    try by apply Hlength_filter. (* 元のゴール+2つの追加されたゴールに対してby applyする。tryなのでエラーが出る方は無視される *)
+  repeat rewrite -Hquick_sort_In_length; (* repeatはタクティックを何度も実行します *)
+    try by apply Hlength_filter. (* 元のゴール+2つの追加されたゴールに対してby applyします。tryなのでエラーが出る方は無視されます *)
   apply filter_negb_In => // x'.
-  apply leb_antisym.
+  by apply leb_antisym.
 - rewrite quick_sort_equation.
   case_eq xs => //= x1 xs1 Hxs.
   remember (quick_sort (filter (fun x0 => x0 <? x1) xs1)) as left.
@@ -674,7 +673,7 @@ case_eq left.
   clear Heqleft left.
   move=> head left Heqleft /=.
   split => [ x | ].
-  (* headはそれ以外の要素のどれよりも小さいことを示す *)
+  (* headはそれ以外の要素のどれよりも小さいことを示します *)
   + rewrite in_app_iff.
     case => [ Hin_left | Hin_right ].
     * suff : sorted (head :: left).
@@ -705,7 +704,7 @@ case_eq left.
         rewrite leb_le.
         apply le_trans.
         by apply Hhead_le_x1.
-  (* head以外の要素がソートされていることを示す *)
+  (* head以外の要素がソートされていることを示します *)
   + apply sorted_app.
     * suff : sorted (head :: left).
         rewrite /=.

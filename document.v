@@ -417,7 +417,8 @@ Proof.
 Admitted.
 
 (* 
-命題A, Bに対して、A <-> Bという命題はA -> BかつB -> Aを表します
+命題A, Bに対して、A <-> Bという命題はAとBが必要十分条件であることを表します
+A <-> Bは分解するとA -> BとB -> Aになります
  *)
 Theorem eq_iff_eqb n m : (n =? m) = true <-> n = m.
 Proof.

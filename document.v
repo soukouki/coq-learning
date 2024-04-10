@@ -410,7 +410,7 @@ About False_ind.
  *)
 
 (* 
-=?はbool型の比較関数で、戻り値はbool型の値であるtrueかfalseになります。その他の比較関数は以下のとおりです
+=?はbool型の比較演算子で、戻り値はbool型の値であるtrueかfalseになります。その他の比較関数は以下のとおりです
 Prop | bool
   =  |  =?
   <> | (なし)

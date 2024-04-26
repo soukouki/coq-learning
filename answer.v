@@ -58,7 +58,7 @@ Definition and_to_or : A /\ B -> A \/ B :=
 Definition and_to_or2 : A /\ B -> A \/ B :=
   fun H =>
     match H with
-    | conj _ b => or_intror b (* この定理はこうも書けます *)
+    | conj _ b => or_intror b (* この定理はこういう書き方もあります *)
     end.
 
 (* Q3-1 move =>とexactを使う問題 *)

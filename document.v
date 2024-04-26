@@ -2,6 +2,7 @@
 (* 
 CoqIDEではCtrl+↓とCtrl+↑キーを使い、一部分ずつ型検査できます
 Ctrl+↓を押して進んでいきましょう
+緑の範囲が検証が終わった範囲です
  *)
 
 From mathcomp Require Import ssreflect.
@@ -56,15 +57,18 @@ Admitted.
 *** ステップ2 ***
 
 Inductive and (A B  : Prop) : Prop := conj : A -> B -> A /\ B.
-andの定義は上記の通りです。Inductiveは帰納型で、いわゆる代数的データ構造です
+andの定義は上記の通りです。and型はAとBが同時に成り立つことを意味します
+Inductiveは帰納型で、いわゆる代数的データ構造です。他の言語でいうタプル型の定義と似ています
+
 Printコマンド、あるいはCoqIDEではandにカーソルを合わせてCtrl+Shift+Pで定義を確認できます
 Coqでは記法を自由に拡張することができ、A /\ Bと書くことでand A Bと同等のことができます
  *)
 
 Print and.
 (*
-Inductiveで定義された帰納型は、パターンマッチを用いて分解することができます。andは1つの枝conjを持ちます
-conjは2引数を受け取るので、分解するときには2つの値が出てきます。求める型の値はその2つ目の値なので、それを返すことで証明できます
+Inductiveで定義された帰納型は、パターンマッチを用いて分解できます
+andは1つの枝conjを持つので、パターンマッチを使うとその1つの枝について記述することになります
+conjは2引数を受け取るので、分解するときには2つの値が出てきます。今回求める型の値は2つ目の値なので、それを返すことで証明できます
  *)
 Definition and_left : A /\ B -> A :=
   fun a_and_b =>
@@ -89,7 +93,8 @@ Admitted.
 About conj.
 (* 
 Aboutコマンド、あるいはCoqIDEではconjにカーソルを合わせてCtrl+Shift+Aを押すと、どのような型を持っているか確認できます
-conjは、2つの値A, Bを受け取り、A /\ Bを返す関数であることがわかります
+conjは、2つのA型・B型の値を受け取り、A /\ Bを返す関数であることがわかります
+conjを使うことで、A型・B型の2つの値からA /\ Bの型を作れます
  *)
 
 (* Q2-2 *)
@@ -106,6 +111,8 @@ Inductive or (A B : Prop) : Prop :=
   | or_introl : A -> A \/ B
   | or_intror : B -> A \/ B.
 orは2つの枝をもつ帰納型です。パターンマッチする際には2つの枝(or_introl, or_intror)に別れます
+
+他の言語でいうEither型と同じような定義になっています
  *)
 
 Definition A_or_A_to_A : A \/ A -> A :=
@@ -211,7 +218,10 @@ Qed.
 Theorem and_right' : A /\ B -> B.
 Proof.
 Admitted.
-(* ここまで出ていたAdmittedコマンドは、証明を途中で打ち切って証明できたことにするコマンドです *)
+(* 
+ここまで出ていたAdmittedコマンドは、証明を途中で打ち切って証明できたことにするコマンドです
+また、admitタクティックというものも存在し、これは現在のゴールを途中で打ち切ります
+ *)
 
 Theorem A_to_B_to_A_and_B' : A -> B -> A /\ B.
 Proof.
@@ -282,14 +292,14 @@ Theorem rewrite_sample1 n : n = 2 -> n + 1 = 3.
 Proof.
 move => H1.
 rewrite H1. (* rewriteタクティックは、仮定の等式を使用してゴールを置き換えます *)
-rewrite /=. (* rewrite /=とすると、式中の単純な等式変形を行います *)
+rewrite /=. (* rewrite /=とすると、単純な等式変形を行います *)
 reflexivity. (* 両辺が等しいときにはreflexivityタクティックを使うと証明できます *)
 Restart.
 move => H1.
 by rewrite H1.
 (* 
 byを前に付けると証明をある程度自動で進めてくれます
-また、SSReflectではゴールを解決したタイミングでbyを付け、証明がアップデートで壊れるのを防ぐ慣習があります
+また、SSReflectではゴールを解決したタイミングでbyを付け、証明が壊れた際にすぐに気付けるようにする慣習があります
  *)
 Qed.
 
@@ -329,13 +339,13 @@ Theorem mul_functional : forall n m, exists x, x = n * m.
 Proof.
 Admitted.
 
-(* Q5-4 *)
+(* Q5-4 existsで指定できるのは変数だけではありません *)
 Theorem sqrt_25 : exists x, x * x = 25.
 Proof.
 Admitted.
 
 (* 
-また、仮定にexistsが来た場合には、caseタクティックで分解し値を取り出せます
+また、仮定にexistsが来た場合には、caseタクティックで分解し値を取り出すことができます
 Print exでexistsの中身を見ると、existsが帰納型として定義されていることがわかります
 帰納型はパターンマッチで分解でき、existsの中身のforall x : A, P xが取り出せるのです
  *)
@@ -361,7 +371,7 @@ Proof.
 move : n. (* move :タクティックを使うことで、コンテキストからゴールへ移動できます *)
 induction n. (* inductionタクティックを使うことで、帰納法を利用できます *)
 (* 複雑な問題では、inductionを使う前にmove :でコンテキストの値や証明をゴールエリアに持ってくることが必要なことがあります *)
-- by [].
+- by []. (* by []はbyを単独で使う記法です *)
 - rewrite /=.
   by rewrite IHn.
 Qed.
@@ -376,7 +386,9 @@ Theorem succ_plus n m : n + (S m) = S (n + m).
 Proof.
 Admitted.
 
-(* Q6-3 rewrite n_plus_zero_eq_nとすると既に証明した定理を使えます *)
+(* rewrite n_plus_zero_eq_nとすると既に証明した定理を使えます *)
+
+(* Q6-3 byを使うと自動で進みすぎてしまうので、byを使わずに証明してみましょう *)
 Theorem plus_comm n m : n + m = m + n.
 Proof.
 Admitted.

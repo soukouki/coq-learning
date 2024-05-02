@@ -67,6 +67,7 @@ Proof.
 move => a.
 move => b.
 exact a.
+
 Restart.
 move => a b. (* 2引数を同時に受け取れます *)
 by []. (* byタクティックを使って自動で証明を進められます *)
@@ -78,6 +79,7 @@ move => h1 h2 a.
 apply h2.
 apply h1.
 exact a.
+
 Restart.
 move => h1 h2 a.
 by apply /h2 /h1. (* applyは/を使うことで複数の仮定を同時に渡すこともできます *)
@@ -88,6 +90,7 @@ Theorem and_right' : A /\ B -> B.
 Proof.
 case => a b.
 exact b.
+
 Restart.
 by case.
 Qed.
@@ -99,6 +102,7 @@ case => a b.
 split.
 - exact b.
 - exact a.
+
 Restart.
 case.
 by split.
@@ -114,10 +118,12 @@ case.
 - move => b.
   left.
   exact b.
+
 Restart.
 case => [ a | b ]. (* このように書くと、複数の枝に分かれるcaseでもmoveを省略できます *)
 - by right.
 - by left.
+
 Restart.
 case; by [ right | left ].
 Qed.
@@ -130,10 +136,12 @@ case.
   exact b.
 - case => b c.
   exact b.
+
 Restart.
 case.
 - by case.
 - by case.
+
 Restart.
 by case => [ [ ] | [ ] ]. (* 可読性はかなり悪いですが、このような書き方もできます *)
 Qed.
@@ -147,6 +155,7 @@ move => H.
 rewrite H.
 rewrite /=.
 reflexivity.
+
 Restart.
 by move => ->. (* ゴールに対するrewriteはこのようにも書けます *)
 Qed.
@@ -158,6 +167,7 @@ move => H.
 rewrite H.
 rewrite /=.
 reflexivity.
+
 Restart.
 by move => ->.
 Qed.
@@ -183,6 +193,7 @@ case => H1 H2.
 rewrite H1.
 rewrite H2.
 reflexivity.
+
 Restart.
 by case => x [ -> -> ].
 Qed.
@@ -201,6 +212,7 @@ induction n.
 - by [].
 - rewrite /=.
   by rewrite IHn.
+
 Restart.
 by induction n.
 Qed.
@@ -212,6 +224,7 @@ induction n.
 - by rewrite /=.
 - rewrite /=.
   by rewrite IHn.
+
 Restart.
 by induction n.
 Qed.
@@ -225,6 +238,7 @@ induction n.
 - rewrite /=.
   rewrite IHn.
   by rewrite succ_plus.
+
 Restart.
 induction n => /=.
 - by rewrite n_plus_zero_eq_n.
@@ -245,6 +259,7 @@ case n.
     case n1.
     * by [].
     * by [].
+
 Restart.
 case n => // n0.
 case n0 => // n1.
@@ -260,6 +275,7 @@ clear n H1.
 induction m.
 - by [].
 - by [].
+
 Restart.
 move => ->.
 by induction m.
@@ -284,6 +300,7 @@ induction n.
     rewrite H2 in H1.
     apply f_equal.
     by apply IHn.
+
 Restart.
 move : m.
 induction n => m H1.
@@ -302,6 +319,7 @@ move => H1 H2.
 apply H1.
 apply f_equal.
 by [].
+
 Restart.
 move => H1 H2.
 by apply /H1 /f_equal.
@@ -313,6 +331,7 @@ Proof.
 move => H1 H2.
 apply (f_equal pred) in H2.
 by rewrite /= in H2.
+
 Restart.
 move => H1 H2.
 apply H1.
@@ -420,6 +439,7 @@ case_eq l.
 - move => n' l' H2.
   rewrite H2 in H1.
   by rewrite /= in H1.
+
 Restart.
 by case_eq l.
 Qed.
@@ -435,6 +455,7 @@ induction l.
     by apply append_neq_nil in H1.
   + move=> n' l' H1.
     by rewrite H1 in IHl.
+
 Restart.
 induction l => //=.
 case_eq (append l n) => [ H1 | n' l' H1 ].
@@ -452,6 +473,7 @@ induction l.
   case l.
   + by rewrite /=.
   + by rewrite /=.
+
 Restart.
 induction l => //=.
 rewrite -IHl.
@@ -466,6 +488,7 @@ induction l.
 - rewrite /=.
   rewrite length_append_succ.
   by rewrite IHl.
+
 Restart.
 induction l => //=.
 by rewrite length_append_succ IHl.
@@ -484,6 +507,7 @@ induction l.
   + rewrite /=.
     rewrite IHl0.
     by rewrite /=.
+
 Restart.
 induction l => //=.
 rewrite -{2}IHl.

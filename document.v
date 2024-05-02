@@ -30,7 +30,7 @@ Admitted.
 (* Admittedについては後で説明します *)
 
 (*
-A -> B(Aを受取りBを返す関数)は値と同じように扱えます
+A -> B(A型の値を受け取り、B型の値を返す関数)は値と同じように扱えます
 つまり、次のmodus_ponensではfun f => fun a => ...とすると引数として受け取れます
 f : A -> B
 a : A
@@ -60,8 +60,8 @@ Inductive and (A B  : Prop) : Prop := conj : A -> B -> A /\ B.
 andの定義は上記の通りです。and型はAとBが同時に成り立つことを意味します
 Inductiveは帰納型で、いわゆる代数的データ構造です。他の言語でいうタプル型の定義と似ています
 
-Printコマンド、あるいはCoqIDEではandにカーソルを合わせてCtrl+Shift+Pで定義を確認できます
-Coqでは記法を自由に拡張することができ、A /\ Bと書くことでand A Bと同等のことができます
+Printコマンド、あるいはCoqIDEではandにカーソルを合わせてCtrl+Shift+Pを押すと定義を確認できます
+Coqでは記法を自由に拡張することができ、A /\ Bと書くことでand A Bと同じことになります
  *)
 
 Print and.
@@ -77,8 +77,7 @@ Definition and_left : A /\ B -> A :=
     end.
 
 (* 
-パターンマッチングの構文は次のようなものです
-bがbool型の値だとすると、
+パターンマッチングの構文は、bがbool型の値だとすると、
 match b with
   | true => 1
   | false => 0
@@ -111,7 +110,6 @@ Inductive or (A B : Prop) : Prop :=
   | or_introl : A -> A \/ B
   | or_intror : B -> A \/ B.
 orは2つの枝をもつ帰納型です。パターンマッチする際には2つの枝(or_introl, or_intror)に別れます
-
 他の言語でいうEither型と同じような定義になっています
  *)
 
@@ -201,6 +199,7 @@ case.
 (* caseタクティックは、仮定に帰納型がきたときに、自動でパターンマッチを行い分解します *)
 move => ha hb.
 exact ha.
+
 Restart. (* Restartコマンドは、証明を最初からやり直せます *)
 case => ha hb.
 (* 
@@ -208,9 +207,10 @@ caseタクティックには=>を付けることで、caseとmove =>を合わせ
 他のタクティックにも=>を付けると同じように動作するものがあります。いろいろ試してみましょう
  *)
 exact ha.
+
 Restart.
 move => H.
-case H => a b. (* case HとするとHを分解することができます *)
+case H => a b. (* case HとするとHを分解できます *)
 exact a.
 Qed.
 
@@ -233,6 +233,7 @@ splitタクティックは、ゴールに帰納型がきたときに分解しま
  *)
 - exact a.
 - exact b.
+
 Restart.
 apply conj. (* これはconjそのものなので、このように書いても証明できます *)
 Qed.
@@ -248,10 +249,12 @@ move => a.
 left.
 (* ゴールがA \/ Bの形になっているときには、leftタクティックとrightタクティックを使うことで、選択することができます *)
 exact a.
+
 Restart.
 move => a.
 apply or_introl. (* applyタクティックでor_introlを直接使うことでも証明できます *)
 exact a.
+
 Restart.
 exact (fun a => or_introl a). (* 可読性は悪いですが、このような書き方もできます *)
 Qed.
@@ -272,7 +275,7 @@ End Section1.
 (* 
 *** ステップ5 ***
 
-ここまで「ならば」「かつ」「または」といった基本的な命題を扱ってきましたが、ここからはより数学的な命題を証明していきます
+ここまで「ならば」「かつ」「または」といった基本的な命題を扱ってきましたが、ここからはより実践的な命題を証明していきます
  *)
 
 Print nat.
@@ -294,6 +297,7 @@ move => H1.
 rewrite H1. (* rewriteタクティックは、仮定の等式を使用してゴールを置き換えます *)
 rewrite /=. (* rewrite /=とすると、単純な等式変形を行います *)
 reflexivity. (* 両辺が等しいときにはreflexivityタクティックを使うと証明できます *)
+
 Restart.
 move => H1.
 by rewrite H1.
@@ -327,6 +331,7 @@ Admitted.
 Coqでは、前者をforall <変数>, <命題>、後者をexists <変数>, <命題>と書きます
 
 例えば、次の定理add_functinalは「すべての自然数n, mに対して、ある自然数xが存在し、x = n + mを満たす」という意味です
+forallに対してはmove =>タクティックを、existsに対してはexistsタクティックを使います
  *)
 Theorem add_functional : forall n m, exists x, x = n + m.
 Proof.
@@ -364,7 +369,7 @@ Admitted.
 (* 
 *** ステップ6 ***
 
-ここからは帰納法を使い、一般的な値の定理を証明していきます
+ここからは帰納法を使い、一般的な値に対する定理を証明していきます
  *)
 Theorem mul_one_eq_n n : n * 1 = n.
 Proof.
@@ -448,7 +453,7 @@ Proof.
 Admitted.
 
 (* 
-命題A, Bに対して、A <-> Bという命題はAとBが必要十分条件であることを表します
+命題A, Bに対して、A <-> Bという命題はAについてBが必要十分条件であることを表します
 A <-> Bは分解するとA -> BとB -> Aになります
  *)
 Theorem eq_iff_eqb n m : (n =? m) = true <-> n = m.
@@ -551,6 +556,7 @@ Print list.
 Inductive list (A : Type) : Type :=
   | nil : list A
   | cons : A -> list A -> list A.
+list型はnilとconsの2つのコンストラクタを持ちます。nilは空のリストを表し、consは先頭の要素と残りのリストを表します
  *)
 Compute nil.
 Compute (cons 1 nil).
@@ -579,6 +585,7 @@ Compute append (1 :: nil) 2.
 
 (* Q9-1 リストを逆順に並べる関数reverseを定義してみましょう *)
 Fixpoint reverse (l : list nat) := l.
+Compute reverse (1 :: 2 :: nil).
 
 (* Q9-2 リストのn番目の要素を取得する関数を定義してみましょう 2重にパターンマッチングする必要があります *)
 Fixpoint list_at (l : list nat) (n : nat) := 0.
@@ -589,7 +596,7 @@ Compute list_at (1 :: 2 :: nil) 1.
 リストの最後の要素を取得する関数です
 パターンマッチの一部を取るときにはasを使います
 Coqでは無限ループができないことになっているので、それを保証するために必ずパターンマッチの一部を使って呼び出す必要があります
-(もっと一般に無限ループしないこと(=停止性)を保証するやり方は後ほど述べます)
+(もっと一般に無限ループしないこと(=停止性)を保証するやり方はステップ10で説明します)
  *)
 Fixpoint last (l : list nat) :=
   match l with
@@ -605,6 +612,7 @@ Theorem one_length n : length (cons n nil) = 1.
 Proof.
 rewrite /=.
 reflexivity.
+
 Restart.
 by []. (* byタクティックは証明を大幅に短くできます。活用していきましょう *)
 Qed.
@@ -621,6 +629,7 @@ induction l.
 - by [].
 - rewrite /=.
   by rewrite IHl.
+
 Restart.
 induction l => //=.
 (* 
@@ -720,7 +729,7 @@ End Section2.
  *)
 Require Import Recdef FunInd Coq.Lists.List Coq.Arith.Wf_nat Coq.Arith.PeanoNat Coq.Arith.Lt.
 Import Coq.Lists.List.ListNotations Coq.Arith.PeanoNat.Nat.
-(* Listの記法については https://coq.inria.fr/doc/V8.19.0/stdlib/Coq.Lists.List.html を見てください *)
+(* リストの記法については https://coq.inria.fr/doc/V8.19.0/stdlib/Coq.Lists.List.html を見てください *)
 
 Print In.
 Print length.
@@ -775,7 +784,7 @@ Admitted.
 (* 
 便利なタクティック
 - remember <式> as <名前> はゴールやコンテキスト中の式をくくりだして、証明を見やすくできます
-- subst はコンテキストにある等式を自動で使用し、最小限の変数で表せるように展開します
+- subst はコンテキストにある等式を自動で使用し、最小限の変数で表せるように等式変形します
  *)
 
 (* Q10-7 *)
@@ -805,9 +814,11 @@ Proof.
 Admitted.
 
 (* 
-おつかれさまでした
+おつかれさまでした！
 ぜひ感想を教えてもらえると嬉しいです
+また、githubのリポジトリにスターをつけていただけると励みになります
 
 Twitter : @sou7___ (アンダーバー3つ)
 ActivityHub : @sou7@misskey.io
+GitHub : https://github.com/soukouki/coq-learning
  *)

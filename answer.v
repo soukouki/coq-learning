@@ -209,6 +209,14 @@ Qed.
 Theorem n_plus_zero_eq_n n : n + 0 = n.
 Proof.
 induction n.
+- rewrite /Nat.add.
+  reflexivity.
+- rewrite /=.
+  rewrite IHn.
+  reflexivity.
+
+Restart.
+induction n.
 - by [].
 - rewrite /=.
   by rewrite IHn.
@@ -220,6 +228,14 @@ Qed.
 (* Q6-2 *)
 Theorem succ_plus n m : n + (S m) = S (n + m).
 Proof.
+induction n.
+- rewrite /=.
+  reflexivity.
+- rewrite /=.
+  rewrite IHn.
+  reflexivity.
+
+Restart.
 induction n.
 - by rewrite /=.
 - rewrite /=.
@@ -234,10 +250,19 @@ Theorem plus_comm n m : n + m = m + n.
 Proof.
 induction n.
 - rewrite /=.
-  by rewrite n_plus_zero_eq_n.
+  rewrite n_plus_zero_eq_n.
+  reflexivity.
 - rewrite /=.
   rewrite IHn.
-  by rewrite succ_plus.
+  rewrite succ_plus.
+  reflexivity.
+
+Restart.
+induction n => /=.
+- rewrite n_plus_zero_eq_n.
+  reflexivity.
+- rewrite IHn succ_plus.
+  reflexivity.
 
 Restart.
 induction n => /=.

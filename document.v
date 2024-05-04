@@ -19,6 +19,12 @@ fun <名前> => <式> でラムダ式を定義できます
  *)
 Definition A_to_A : A -> A := fun a => a.
 
+(* 
+:の後には型が続きます
+Variables A B C : Prop はProp型の変数A, B, Cを定義しています
+定数 A_to_A は型 A -> A、つまりA型の値を受け取りA型の値を返す関数の型を持っています
+ *)
+
 (* Q1-1 問題はこの形式で書かれているので、Admitted.を消して、A_to_Aを参考に入力してください *)
 Definition func_sample : A -> A.
 Admitted.
@@ -30,7 +36,7 @@ Admitted.
 (* Admittedについては後で説明します *)
 
 (*
-A -> B(A型の値を受け取り、B型の値を返す関数)は値と同じように扱えます
+A -> B(Aを受取りBを返す関数)は値と同じように扱えます
 つまり、次のmodus_ponensではfun f => fun a => ...とすると引数として受け取れます
 f : A -> B
 a : A
@@ -60,8 +66,8 @@ Inductive and (A B  : Prop) : Prop := conj : A -> B -> A /\ B.
 andの定義は上記の通りです。and型はAとBが同時に成り立つことを意味します
 Inductiveは帰納型で、いわゆる代数的データ構造です。他の言語でいうタプル型の定義と似ています
 
-Printコマンド、あるいはCoqIDEではandにカーソルを合わせてCtrl+Shift+Pを押すと定義を確認できます
-Coqでは記法を自由に拡張することができ、A /\ Bと書くことでand A Bと同じことになります
+Printコマンド、あるいはCoqIDEでは名前にカーソルを合わせてCtrl+Shift+Pで定義を確認できます
+Coqでは記法を自由に拡張することができ、A /\ Bと書くことでand A Bと同等のことができます
  *)
 
 Print and.
@@ -77,7 +83,8 @@ Definition and_left : A /\ B -> A :=
     end.
 
 (* 
-パターンマッチングの構文は、bがbool型の値だとすると、
+パターンマッチングの構文は次のようなものです
+bがbool型の値だとすると、
 match b with
   | true => 1
   | false => 0
@@ -91,7 +98,8 @@ Admitted.
 
 About conj.
 (* 
-Aboutコマンド、あるいはCoqIDEではconjにカーソルを合わせてCtrl+Shift+Aを押すと、どのような型を持っているか確認できます
+Aboutコマンド、あるいはCoqIDEでは名前にカーソルを合わせてCtrl+Shift+Aを押すと、どのような型を持っているか確認できます
+Printコマンドは定義の内容を、Aboutコマンドは型を表示します
 conjは、2つのA型・B型の値を受け取り、A /\ Bを返す関数であることがわかります
 conjを使うことで、A型・B型の2つの値からA /\ Bの型を作れます
  *)
@@ -110,6 +118,7 @@ Inductive or (A B : Prop) : Prop :=
   | or_introl : A -> A \/ B
   | or_intror : B -> A \/ B.
 orは2つの枝をもつ帰納型です。パターンマッチする際には2つの枝(or_introl, or_intror)に別れます
+
 他の言語でいうEither型と同じような定義になっています
  *)
 
@@ -130,7 +139,7 @@ Admitted.
 Definition or_comm' : A \/ B -> B \/ A.
 Admitted.
 
-(* Q2-6 *)
+(* Q2-6 複数の解答の方針があります *)
 Definition and_to_or : A /\ B -> A \/ B.
 Admitted.
 
@@ -201,6 +210,7 @@ move => ha hb.
 exact ha.
 
 Restart. (* Restartコマンドは、証明を最初からやり直せます *)
+(* 今度はmoveを使わず、case =>を使って証明してみましょう *)
 case => ha hb.
 (* 
 caseタクティックには=>を付けることで、caseとmove =>を合わせたような動作をします
@@ -210,7 +220,7 @@ exact ha.
 
 Restart.
 move => H.
-case H => a b. (* case HとするとHを分解できます *)
+case H => a b. (* case HとするとHを分解することができます *)
 exact a.
 Qed.
 
@@ -275,7 +285,7 @@ End Section1.
 (* 
 *** ステップ5 ***
 
-ここまで「ならば」「かつ」「または」といった基本的な命題を扱ってきましたが、ここからはより実践的な命題を証明していきます
+ここまで「ならば」「かつ」「または」といった基本的な命題を扱ってきましたが、ここからはより数学的な命題を証明していきます
  *)
 
 Print nat.
@@ -292,6 +302,11 @@ Coqでは、nat(naturl number - 自然数)型を扱って証明していきま�
  *)
 
 Theorem rewrite_sample1 n : n = 2 -> n + 1 = 3.
+(* 
+Theoremは引数を受け取れます
+意味としては、任意のnに対して定理が成り立つことを示します
+引数を受け取るためには他にも、Variable, Variablesコマンドも使えます。
+ *)
 Proof.
 move => H1.
 rewrite H1. (* rewriteタクティックは、仮定の等式を使用してゴールを置き換えます *)
@@ -331,7 +346,6 @@ Admitted.
 Coqでは、前者をforall <変数>, <命題>、後者をexists <変数>, <命題>と書きます
 
 例えば、次の定理add_functinalは「すべての自然数n, mに対して、ある自然数xが存在し、x = n + mを満たす」という意味です
-forallに対してはmove =>タクティックを、existsに対してはexistsタクティックを使います
  *)
 Theorem add_functional : forall n m, exists x, x = n + m.
 Proof.
@@ -369,7 +383,7 @@ Admitted.
 (* 
 *** ステップ6 ***
 
-ここからは帰納法を使い、一般的な値に対する定理を証明していきます
+ここからは帰納法を使い、一般的な値の定理を証明していきます
  *)
 Theorem mul_one_eq_n n : n * 1 = n.
 Proof.
@@ -397,7 +411,6 @@ Admitted.
 Theorem plus_comm n m : n + m = m + n.
 Proof.
 Admitted.
-
 
 Require Import Coq.Arith.PeanoNat.
 
@@ -453,7 +466,7 @@ Proof.
 Admitted.
 
 (* 
-命題A, Bに対して、A <-> Bという命題はAについてBが必要十分条件であることを表します
+命題A, Bに対して、A <-> Bという命題はAとBが必要十分条件であることを表します
 A <-> Bは分解するとA -> BとB -> Aになります
  *)
 Theorem eq_iff_eqb n m : (n =? m) = true <-> n = m.
@@ -556,7 +569,6 @@ Print list.
 Inductive list (A : Type) : Type :=
   | nil : list A
   | cons : A -> list A -> list A.
-list型はnilとconsの2つのコンストラクタを持ちます。nilは空のリストを表し、consは先頭の要素と残りのリストを表します
  *)
 Compute nil.
 Compute (cons 1 nil).
@@ -585,7 +597,6 @@ Compute append (1 :: nil) 2.
 
 (* Q9-1 リストを逆順に並べる関数reverseを定義してみましょう *)
 Fixpoint reverse (l : list nat) := l.
-Compute reverse (1 :: 2 :: nil).
 
 (* Q9-2 リストのn番目の要素を取得する関数を定義してみましょう 2重にパターンマッチングする必要があります *)
 Fixpoint list_at (l : list nat) (n : nat) := 0.
@@ -596,7 +607,7 @@ Compute list_at (1 :: 2 :: nil) 1.
 リストの最後の要素を取得する関数です
 パターンマッチの一部を取るときにはasを使います
 Coqでは無限ループができないことになっているので、それを保証するために必ずパターンマッチの一部を使って呼び出す必要があります
-(もっと一般に無限ループしないこと(=停止性)を保証するやり方はステップ10で説明します)
+(もっと一般に無限ループしないこと(=停止性)を保証するやり方は後ほど述べます)
  *)
 Fixpoint last (l : list nat) :=
   match l with
@@ -727,9 +738,10 @@ End Section2.
 
 ここまでお疲れ様でした。ここからはラストスパート、クイックソートがソートできることを示してみましょう
  *)
-Require Import Recdef FunInd Coq.Lists.List Coq.Arith.Wf_nat Coq.Arith.PeanoNat Coq.Arith.Lt.
+Require Import Recdef FunInd Coq.Lists.List Coq.Arith.Wf_nat.
+Require Import Coq.Arith.PeanoNat Coq.Arith.Lt.
 Import Coq.Lists.List.ListNotations Coq.Arith.PeanoNat.Nat.
-(* リストの記法については https://coq.inria.fr/doc/V8.19.0/stdlib/Coq.Lists.List.html を見てください *)
+(* Listの記法については https://coq.inria.fr/doc/V8.19.0/stdlib/Coq.Lists.List.html を見てください *)
 
 Print In.
 Print length.
@@ -784,7 +796,7 @@ Admitted.
 (* 
 便利なタクティック
 - remember <式> as <名前> はゴールやコンテキスト中の式をくくりだして、証明を見やすくできます
-- subst はコンテキストにある等式を自動で使用し、最小限の変数で表せるように等式変形します
+- subst はコンテキストにある等式を自動で使用し、最小限の変数で表せるように展開します
  *)
 
 (* Q10-7 *)
@@ -814,11 +826,9 @@ Proof.
 Admitted.
 
 (* 
-おつかれさまでした！
+おつかれさまでした
 ぜひ感想を教えてもらえると嬉しいです
-また、githubのリポジトリにスターをつけていただけると励みになります
 
 Twitter : @sou7___ (アンダーバー3つ)
 ActivityHub : @sou7@misskey.io
-GitHub : https://github.com/soukouki/coq-learning
  *)

@@ -5,7 +5,7 @@ Ctrl+↓を押して進んでいきましょう
 緑の範囲が検証が終わった範囲です
  *)
 
-From mathcomp Require Import ssreflect.
+Require Import ssreflect.
 
 Section Section1.
 Variables A B C : Prop.

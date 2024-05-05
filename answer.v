@@ -1,7 +1,7 @@
 (* 
 # Coq勉強会の解答
  *)
-From mathcomp Require Import ssreflect.
+Require Import ssreflect.
 
 Section Section1.
 Variables A B C : Prop.

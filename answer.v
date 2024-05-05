@@ -369,14 +369,37 @@ Axiom classic : forall P : Prop, P \/ ~ P.
 (* Q8-1 *)
 Theorem Peirce P : (~ P -> P) -> P.
 Proof.
-case (classic P) => //.
-move => np H1.
+case (classic P) => H1 H2.
+- by exact H1.
+- apply H2.
+  by exact H1.
+
+Restart.
+case (classic P) => // np H1.
 by apply H1.
 Qed.
 
 (* Q8-2 *)
 Theorem not_and_or P Q : ~ (P /\ Q) <-> ~ P \/ ~ Q.
 Proof.
+split => H1.
+- case (classic P) => H2.
+  + right => HQ.
+    apply H1.
+    split.
+    * by exact H2.
+    * by exact HQ.
+  + left.
+    exact H2.
+- move=> H2.
+  case H2 => HP HQ.
+  case H1 => H3.
+  + apply H3.
+    by exact HP.
+  + apply H3.
+    by exact HQ.
+
+Restart.
 split => [ H1 | H1 H2 ].
 - case (classic P) => [ p | np ].
   + right => q.
@@ -390,6 +413,21 @@ Qed.
 (* Q8-3 *)
 Theorem not_or_and P Q : ~ (P \/ Q) <-> ~ P /\ ~ Q.
 Proof.
+split => H1.
+- split => H2.
+  + apply H1.
+    left.
+    by exact H2.
+  + apply H1.
+    right.
+    by exact H2.
+- move => H2.
+  case H1 => HNP HNQ.
+  case H2.
+  + by exact HNP.
+  + by exact HNQ.
+
+Restart.
 split => [ H1 | H1 H2 ].
 - split => [ p | q ];
     apply H1;
@@ -443,7 +481,7 @@ Fixpoint last (l : list nat) :=
 (* Q9-3 リストに関する関数の性質を証明する問題 *)
 Theorem cons_length l n : length (cons n l) = S (length l).
 Proof.
-by rewrite /=.
+by [].
 Qed.
 
 Theorem length_append_succ l n : length (append l n) = S (length l).
@@ -452,6 +490,9 @@ induction l.
 - by [].
 - rewrite /=.
   by rewrite IHl.
+Restart.
+induction l => //=.
+by rewrite IHl.
 Qed.
 
 Theorem append_neq_nil l n : append l n <> nil.

@@ -448,17 +448,32 @@ Prop | bool
   >= |  >=?
  *)
 
-(* Q7-1 CoqIDEではCtrl+Shift+nでNotationの切り替えができます *)
+(* Q7-1 *)
 Theorem eqb2_eq2 n : (n =? 2) = true -> n = 2.
 Proof.
 Admitted.
 
-(* Q7-2 clearタクティックを使うことで、コンテキストにある仮定や変数を削除できます *)
+(* 
+inductionタクティックを使う際、仮定が邪魔になってしまうことがあります
+そのときにはclearタクティックを使い、仮定を削除しましょう
+次の問題は解き方によってはclearタクティックを使う必要があります
+ *)
+
+(* Q7-2 *)
 Lemma eq_eqb n m : n = m -> (n =? m) = true.
 Proof.
 Admitted.
 
-About f_equal. (* 次の問題を解く際にはこの定理を使う必要があります *)
+(* 
+caseだけでは仮定が足りないとき、case_eqタクティックを使うとうまく行く場合もあります
+case_eqはcaseの機能に加え、どのように場合分けしたのかを仮定に追加する機能を持っています
+次の問題はcase_eqを使う必要があります
+
+また、次の問題ではf_equalという定理を使う必要があります
+Aboutコマンドを使い、f_equalの型を確認してみましょう
+ *)
+
+About f_equal.
 
 (* Q7-3 *)
 Theorem eqb_eq n m : (n =? m) = true -> n = m.

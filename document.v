@@ -18,6 +18,7 @@ A_to_Aという変数はA -> Aという型を持ちます
 fun <名前> => <式> でラムダ式を定義できます
  *)
 Definition A_to_A : A -> A := fun a => a.
+Definition A_to_B_to_A : A -> B -> A := fun a => fun b => a.
 
 (* 
 :の後には型が続きます
@@ -26,12 +27,12 @@ Variables A B C : Prop はProp型の変数A, B, Cを定義しています
  *)
 
 (* Q1-1 問題はこの形式で書かれているので、Admitted.を消して、A_to_Aを参考に入力してください *)
-Definition func_sample : A -> A.
+Definition B_to_B : B -> B.
 Admitted.
 (* エラーが出なくなれば、定理が証明できたことになります。おめでとうございます！！ *)
 
 (* Q1-2 *)
-Definition A_to_B_to_A : A -> B -> A.
+Definition B_to_A_to_A : B -> A -> A.
 Admitted.
 (* Admittedについては後で説明します *)
 

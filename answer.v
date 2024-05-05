@@ -7,15 +7,16 @@ Section Section1.
 Variables A B C : Prop.
 
 (* Q1-1 直前のA_to_Aを写経する問題 *)
-Definition admitted_sample : A -> A := fun a => a.
+Definition B_to_B : B -> B := fun b => b.
 
 (* Q1-2 ラムダ式を使う問題 *)
-Definition A_to_B_to_A  : A -> B -> A := fun a => fun b => a.
-Definition A_to_B_to_A2 : A -> B -> A := fun a b => a. (* 2引数を同時に受け取ることもできます *)
-Definition A_to_B_to_A3 : A -> B -> A := fun a _ => a. (* 使わない引数はアンダーバーにもできます *)
+Definition B_to_A_to_A  : B -> A -> A := fun b => fun a => a.
+Definition B_to_A_to_A2 : B -> A -> A := fun b a => a. (* 2引数を同時に受け取ることもできます *)
+Definition B_to_A_to_A3 : B -> A -> A := fun _ a => a. (* 使わない引数はアンダーバーにもできます *)
 
 (* Q1-3 関数を含意として使う問題 *)
-Definition modus_ponens : (A -> B) -> A -> B := fun H a => H a.
+Definition modus_ponens  : (A -> B) -> A -> B := fun H a => H a.
+Definition modus_ponens' : (A -> B) -> A -> B := fun H => H. (* A -> Bは第一引数そのままなので、このような書き方もあります *)
 
 (* Q1-4 *)
 Definition imply_trans : (A -> B) -> (B -> C) -> (A -> C) := fun h1 h2 a => h2 (h1 a).

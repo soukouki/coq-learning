@@ -706,20 +706,20 @@ split => [ Hinx | ].
   case => /= Hinx.
   + rewrite Heqleft in Hinx.
     rewrite -Hquick_sort_In_length in Hinx.
+    * rewrite Hxs /=.
+      by apply /le_lt_n_Sm /length_filter.
     * rewrite filter_In in Hinx.
       case Hinx => H _.
       by right.
-    * rewrite Hxs /=.
-      by apply /le_lt_n_Sm /length_filter.
   + case Hinx => H1.
       by left.
     rewrite Heqright in H1.
     rewrite -Hquick_sort_In_length in H1.
+    * rewrite Hxs /=.
+      by apply /le_lt_n_Sm /length_filter.
     * rewrite filter_In in H1.
       case H1 => H2 _.
       by right.
-    * rewrite Hxs /=.
-      by apply /le_lt_n_Sm /length_filter.
 Qed.
 
 Definition length_quick_sort_In(l: nat) :=
@@ -787,14 +787,14 @@ case_eq left.
         by move : Hin_right.
       clear Hin_right.
       case => [ <- | ].
-      - by apply Hhead_le_x1.
-      - rewrite Heqright.
-        rewrite -quick_sort_In.
-        rewrite filter_In.
-        case => _.
-        rewrite leb_le.
-        apply le_trans.
-        by apply Hhead_le_x1.
+      -- by apply Hhead_le_x1.
+      -- rewrite Heqright.
+         rewrite -quick_sort_In.
+         rewrite filter_In.
+         case => _.
+         rewrite leb_le.
+         apply le_trans.
+         by apply Hhead_le_x1.
   (* head以外の要素がソートされていることを示します *)
   + apply sorted_app.
     * suff : sorted (head :: left).

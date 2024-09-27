@@ -450,7 +450,7 @@ Prop | bool
   >= |  >=?
  *)
 
-(* Q7-1 *)
+(* Q7-1 nが2の場合を考えるので、caseを複数回使うことで解けます *)
 Theorem eqb2_eq2 n : (n =? 2) = true -> n = 2.
 Proof.
 Admitted.
@@ -467,6 +467,9 @@ Proof.
 Admitted.
 
 (* 
+この問題では、変数の量化子を含んだ形で帰納法を使う必要があります
+inductionの前にmove :を使って量化子を出すと良いでしょう
+
 caseだけでは仮定が足りないとき、case_eqタクティックを使うとうまく行く場合もあります
 case_eqはcaseの機能に加え、どのように場合分けしたのかを仮定に追加する機能を持っています
 次の問題はcase_eqを使う必要があります
@@ -619,6 +622,7 @@ Fixpoint reverse (l : list nat) := l.
 Fixpoint list_at (l : list nat) (n : nat) := 0.
 Compute list_at (1 :: 2 :: nil) 0.
 Compute list_at (1 :: 2 :: nil) 1.
+Compute list_at (1 :: 2 :: nil) 2. (* 範囲外のインデックスを参照された場合には、0などの適当な値を返すようにしましょう *)
 
 (* 
 リストの最後の要素を取得する関数です
@@ -671,7 +675,7 @@ Qed.
 
 (* 
 last_appendに使用する補題です
-Lemma, Fact, Remark, Corollary, Proposition, PropertyはTheoremと同等です
+Lemma, Fact, Remark, Corollary, Proposition, PropertyはTheoremと同じです
  *)
 Lemma append_neq_nil l n : append l n <> nil.
 Proof.
@@ -758,7 +762,7 @@ End Section2.
 Require Import Recdef FunInd Coq.Lists.List Coq.Arith.Wf_nat.
 Require Import Coq.Arith.PeanoNat Coq.Arith.Lt.
 Import Coq.Lists.List.ListNotations Coq.Arith.PeanoNat.Nat.
-(* Listの記法については https://coq.inria.fr/doc/V8.19.0/stdlib/Coq.Lists.List.html を見てください *)
+(* Listの記法については https://coq.inria.fr/doc/V8.19.0/stdlib/Coq.Lists.List.html を参照して下さい *)
 
 Print In.
 Print length.
@@ -790,7 +794,10 @@ Admitted.
 Require Import ExtrOcamlBasic ExtrOcamlNatInt Mergesort.
 Extraction "quick_sort.ml" quick_sort.
 
-(* Q10-4 Functionコマンドでquick_sort_equationが定義されるので、それを使いましょう *)
+(* Functionコマンドでquick_sort_equationが定義されます。Q10-4ではこれを使います *)
+About quick_sort_equation.
+
+(* Q10-4 *)
 Lemma quick_sort_nil : quick_sort nil = nil.
 Proof.
 Admitted.

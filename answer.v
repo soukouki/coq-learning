@@ -356,7 +356,9 @@ Theorem S_neq n m : n <> m -> S n <> S m.
 Proof.
 move => H1 H2.
 apply (f_equal pred) in H2.
-by rewrite /= in H2.
+rewrite /= in H2.
+(* move : (H1 H2). をするとFalseが得られます *)
+by [].
 
 Restart.
 move => H1 H2.

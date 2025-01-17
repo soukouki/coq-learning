@@ -15,7 +15,7 @@ Definition B_to_A_to_A2 : B -> A -> A := fun b a => a. (* 2引数を同時に受
 Definition B_to_A_to_A3 : B -> A -> A := fun _ a => a. (* 使わない引数はアンダーバーにもできます *)
 
 (* Q1-3 関数を含意として使う問題 *)
-Definition modus_ponens  : (A -> B) -> A -> B := fun H a => H a.
+Definition modus_ponens  : (A -> B) -> A -> B := fun H a => H a. (* H aは関数呼び出しを行っていることに注意しましょう *)
 Definition modus_ponens' : (A -> B) -> A -> B := fun H => H. (* A -> Bは第一引数そのままなので、このような書き方もあります *)
 
 (* Q1-4 *)

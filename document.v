@@ -211,6 +211,14 @@ Qed.
 Theorem imply_trans' : (A -> B) -> (B -> C) -> (A -> C).
 Admitted.
 
+(* 
+今まで証明してきた定義・命題はPrintやAboutを使って確認することが出来ます
+imply_trans  (Q1-4)
+imply_trans' (Q3-2) これらを見てみましょう
+ *)
+Print imply_trans.
+Print imply_trans'.
+(* これを見ると、タクティックを使って証明した命題も、内部ではプログラム的な記法に変換されていることがわかります *)
 
 (* 
 *** ステップ4 ***

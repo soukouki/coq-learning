@@ -560,6 +560,11 @@ Proof.
 by case (classic P).
 Qed.
 
+(* 
+caseの後にはこれまで識別子(変数名など)を指定してきましたが、実は式を指定することも出来ます
+caseの後にカッコを付け、case (classic P)というふうにすると、classic Pに対して場合分けを行うことが出来ます
+ *)
+
 (* Q8-1 *)
 Theorem Peirce P : (~ P -> P) -> P.
 Proof.

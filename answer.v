@@ -580,7 +580,6 @@ induction l.
 Restart.
 induction l => //=.
 rewrite -{2}IHl.
-clear IHl.
 move : (reverse l) => rev.
 induction rev => //=.
 by rewrite IHrev.

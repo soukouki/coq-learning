@@ -87,12 +87,16 @@ Print and.
 Inductiveで定義された帰納型は、パターンマッチを用いて分解できます
 andは1つの枝conjを持つので、パターンマッチを使うとその1つの枝について記述することになります
 conjは2引数を受け取るので、分解するときには2つの値が出てきます。今回求める型の値は2つ目の値なので、それを返すことで証明できます
+もっと詳しく知りたい人は、代数的データ構造で検索してください
  *)
 Definition and_left : A /\ B -> A :=
   fun a_and_b =>
     match a_and_b with
     | conj a b => a
     end.
+
+(* 2つの枝を持つ帰納型の例として、boolがあります。1つ目の枝はtrue、2つ目の枝はfalseです *)
+Print bool.
 
 (* 
 パターンマッチングの構文は次のようなものです
@@ -352,10 +356,10 @@ Admitted.
 Coqでは関数の中身を見ることができます
 また、rewrite /Nat.predというふうにすると中身を展開することができます
  *)
-Print Nat.add.
-Print Nat.mul.
-Print Nat.sub.
-Print Nat.pred.
+Print Nat.add. (* 足し算 *)
+Print Nat.mul. (* 掛け算 *)
+Print Nat.sub. (* 引き算 *)
+Print Nat.pred. (* 前者関数(デクリメント) *)
 
 (* Q5-2 *)
 Theorem rewrite_sample3 n m: n = S m -> pred n = m.
@@ -371,6 +375,7 @@ Coqでは、前者をforall <変数>, <命題>、後者をexists <変数>, <命�
 Theorem add_functional : forall n m, exists x, x = n + m.
 Proof.
 move => n m.
+(* ここでのexistsタクティックは、exists x, x = n + mという命題に対して、(n + m)というそれを満たす具体例が存在するということを与えています *)
 by exists (n + m).
 Qed.
 
@@ -379,17 +384,17 @@ Theorem mul_functional : forall n m, exists x, x = n * m.
 Proof.
 Admitted.
 
-(* Q5-4 existsで指定できるのは変数だけではありません *)
+(* Q5-4 existsタクティックで指定できるのは変数だけではありません *)
 Theorem sqrt_25 : exists x, x * x = 25.
 Proof.
 Admitted.
 
 (* 
-また、仮定にexistsが来た場合には、caseタクティックで分解し値を取り出すことができます
+仮定にexistsが来た場合には、caseタクティックで分解し値を取り出すことができます
 Print exでexistsの中身を見ると、existsが帰納型として定義されていることがわかります
 帰納型はパターンマッチで分解でき、existsの中身のforall x : A, P xが取り出せるのです
  *)
-Print ex.
+Print ex. (* exの定義は難しいので深追いはしなくて構いません *)
 
 (* Q5-5 *)
 Theorem exists_sample1 n : (exists m, n = m + 2 /\ m = 2) -> n = 4.
@@ -416,19 +421,19 @@ induction n. (* inductionタクティックを使うことで、帰納法を利�
   by rewrite IHn.
 Qed.
 
-(* Q6-1 *)
+(* Q6-1 この問題はbyを使わずに解いてください *)
 Theorem n_plus_zero_eq_n n : n + 0 = n.
 Proof.
 Admitted.
 
-(* Q6-2 *)
+(* Q6-2 この問題はbyを使わずに解いてください *)
 Theorem succ_plus n m : n + (S m) = S (n + m).
 Proof.
 Admitted.
 
 (* rewrite n_plus_zero_eq_nとすると既に証明した定理を使えます *)
 
-(* Q6-3 byを使うと自動で進みすぎてしまうので、byを使わずに証明してみましょう *)
+(* Q6-3 この問題はbyを使わずに解いてください *)
 Theorem plus_comm n m : n + m = m + n.
 Proof.
 Admitted.

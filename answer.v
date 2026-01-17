@@ -219,9 +219,9 @@ induction n.
 
 Restart.
 induction n.
-- by [].
-- rewrite /=.
-  by rewrite IHn.
+- reflexivity.
+- rewrite /= IHn.
+  reflexivity.
 
 Restart.
 by induction n.
@@ -231,17 +231,16 @@ Qed.
 Theorem succ_plus n m : n + (S m) = S (n + m).
 Proof.
 induction n.
-- rewrite /=.
-  reflexivity.
+- reflexivity.
 - rewrite /=.
   rewrite IHn.
   reflexivity.
 
 Restart.
 induction n.
-- by rewrite /=.
-- rewrite /=.
-  by rewrite IHn.
+- reflexivity.
+- rewrite /= IHn.
+  reflexivity.
 
 Restart.
 by induction n.

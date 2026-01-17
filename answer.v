@@ -15,8 +15,9 @@ Definition B_to_A_to_A2 : B -> A -> A := fun b a => a. (* 2引数を同時に受
 Definition B_to_A_to_A3 : B -> A -> A := fun _ a => a. (* 使わない引数はアンダーバーにもできます *)
 
 (* Q1-3 関数を含意として使う問題 *)
-Definition modus_ponens  : (A -> B) -> A -> B := fun H a => H a. (* H aは関数呼び出しを行っていることに注意しましょう *)
-Definition modus_ponens' : (A -> B) -> A -> B := fun H => H. (* A -> Bは第一引数そのままなので、このような書き方もあります *)
+Definition modus_ponens1 : (A -> B) -> A -> B := fun f => fun a => f a.
+Definition modus_ponens2 : (A -> B) -> A -> B := fun H a => H a. (* H aは関数呼び出しを行っていることに注意しましょう *)
+Definition modus_ponens3 : (A -> B) -> A -> B := fun H => H. (* (A -> B) -> A -> Bは(A -> B) -> (A -> B)と等しいので、このような書き方もあります *)
 
 (* Q1-4 *)
 Definition imply_trans : (A -> B) -> (B -> C) -> (A -> C) := fun h1 h2 a => h2 (h1 a).
@@ -587,9 +588,9 @@ Qed.
 
 End Section2.
 
-Require Import Recdef FunInd Coq.Lists.List Coq.Arith.Wf_nat Coq.Arith.PeanoNat Coq.Arith.Lt.
-Import Coq.Lists.List.ListNotations Coq.Arith.PeanoNat.Nat.
-(* Listの記法については https://coq.inria.fr/doc/V8.19.0/stdlib/Coq.Lists.List.html を見てください *)
+Require Import Recdef FunInd Lists.List Arith.Wf_nat Arith.PeanoNat Arith.PeanoNat.
+Import Lists.List.ListNotations Arith.PeanoNat.Nat.
+(* Listの記法については https://rocq-prover.org/doc/V9.1.0/stdlib/Stdlib.Lists.List.html を見てください *)
 
 (* Q10-1 *)
 Fixpoint sorted (l : list nat) : Prop :=
@@ -621,9 +622,9 @@ Function quick_sort (xs: list nat) {measure length}: list nat :=
   end.
 Proof.
 - move => xs pivot xs1 Hxs /=.
-  by apply /le_lt_n_Sm /length_filter.
+  by apply /lt_succ_r /length_filter.
 - move => xs pivot xs1 Hxs /=.
-  by apply /le_lt_n_Sm /length_filter.
+  by apply /lt_succ_r /length_filter.
 Qed.
 
 (* Q10-4 *)
@@ -693,7 +694,7 @@ split => [ Hinx | ].
   right.
   have : forall f, length (filter f xs1) < length xs => [ f | Hlength_filter ].
     rewrite Hxs /=.
-    by apply /le_lt_n_Sm /length_filter.
+    by apply /lt_succ_r /length_filter.
   rewrite Heqright Heqleft.
   repeat rewrite -Hquick_sort_In_length; (* repeatはタクティックを何度も実行します *)
     try by apply Hlength_filter. (* 元のゴール+2つの追加されたゴールに対してby applyします。tryなのでエラーが出る方は無視されます *)
@@ -708,7 +709,7 @@ split => [ Hinx | ].
   + rewrite Heqleft in Hinx.
     rewrite -Hquick_sort_In_length in Hinx.
     * rewrite Hxs /=.
-      by apply /le_lt_n_Sm /length_filter.
+      by apply /lt_succ_r /length_filter.
     * rewrite filter_In in Hinx.
       case Hinx => H _.
       by right.
@@ -717,7 +718,7 @@ split => [ Hinx | ].
     rewrite Heqright in H1.
     rewrite -Hquick_sort_In_length in H1.
     * rewrite Hxs /=.
-      by apply /le_lt_n_Sm /length_filter.
+      by apply /lt_succ_r /length_filter.
     * rewrite filter_In in H1.
       case H1 => H2 _.
       by right.
@@ -759,7 +760,7 @@ case_eq left.
   + rewrite Heqright.
     apply Hsorted_quick_sort.
     subst => /=.
-    by apply /le_lt_n_Sm /length_filter.
+    by apply /lt_succ_r /length_filter.
 (* (head :: left) ++ x1 :: right *)
 - rewrite Heqleft.
   clear Heqleft left.
@@ -775,7 +776,7 @@ case_eq left.
       rewrite -Heqleft.
       apply Hsorted_quick_sort.
       rewrite Hxs /=.
-      by apply /le_lt_n_Sm /length_filter.
+      by apply /lt_succ_r /length_filter.
     * have : head <= pivot => [ | Hhead_le_x1 ].
         move : (in_eq head left).
         rewrite -Heqleft.
@@ -804,7 +805,7 @@ case_eq left.
       rewrite -Heqleft.
       apply Hsorted_quick_sort.
       rewrite Hxs /=.
-      by apply /le_lt_n_Sm /length_filter.
+      by apply /lt_succ_r /length_filter.
     * rewrite Heqright /=.
       split => [ x | ].
       -- rewrite -quick_sort_In.
@@ -813,7 +814,7 @@ case_eq left.
          by rewrite leb_le.
       -- apply Hsorted_quick_sort.
          rewrite Hxs /=.
-         by apply /le_lt_n_Sm /length_filter.
+         by apply /lt_succ_r /length_filter.
     * move => lx rx Hlx Hrx.
       rewrite /le.
       apply (le_trans lx pivot rx).

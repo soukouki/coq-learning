@@ -16,7 +16,7 @@ Variables A B C : Prop.
 (* 
 *** ステップ1 ***
 
-Definitionで定数を定義します
+Definition <名前> : <型> := <値>で定数を定義します
 A_to_Aという部分は定数の名前がA_to_Aであることを示しています
 A -> Aという部分はAならばAという命題、または、Aを受け取りAを返す関数の型を表しています
 (この命題と型が対応するというものは、カリー・ハワード同型対応に繋がります)
@@ -34,7 +34,7 @@ Variables A B C : Prop はProp型の変数A, B, Cを定義しています
 「A_to_A」や「A」、「a」は同等に扱われます
  *)
 
-(* Q1-1 問題はこの形式で書かれているので、Admitted.を消して、A_to_Aを参考に入力してください *)
+(* Q1-1 問題はこの形式で書かれているので、B -> B.の.の部分とAdmitted.を消して、A_to_Aを参考に入力してください *)
 Definition B_to_B : B -> B.
 Admitted.
 (* エラーが出なくなれば、定理が証明できたことになります。おめでとうございます！！ *)
@@ -783,10 +783,9 @@ End Section2.
 
 ここまでお疲れ様でした。ここからはラストスパート、クイックソートがソートできることを示してみましょう
  *)
-Require Import Recdef FunInd Coq.Lists.List Coq.Arith.Wf_nat.
-Require Import Coq.Arith.PeanoNat Coq.Arith.Lt.
-Import Coq.Lists.List.ListNotations Coq.Arith.PeanoNat.Nat.
-(* Listの記法については https://coq.inria.fr/doc/V8.19.0/stdlib/Coq.Lists.List.html を参照して下さい *)
+Require Import Recdef FunInd Lists.List Arith.Wf_nat Arith.PeanoNat Arith.PeanoNat.
+Import Lists.List.ListNotations Arith.PeanoNat.Nat.
+(* Listの記法については https://rocq-prover.org/doc/V9.1.0/stdlib/Stdlib.Lists.List.html を見てください *)
 
 Print In.
 Print length.

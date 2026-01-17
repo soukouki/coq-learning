@@ -444,27 +444,27 @@ Import Coq.Lists.List.ListNotations.
 
 Module Section2.
 
-Fixpoint length (l : list nat) :=
+Fixpoint length (l : list nat) : nat :=
   match l with
   | nil => 0
   | cons _ l' => S (length l')
   end.
 
-Fixpoint append (l : list nat) (n : nat) :=
+Fixpoint append (l : list nat) (n : nat) : list nat :=
   match l with
   | nil => cons n nil
   | cons head l' => cons head (append l' n)
   end.
 
 (* Q9-1 *)
-Fixpoint reverse (l : list nat) :=
+Fixpoint reverse (l : list nat) : list nat :=
   match l with
   | nil => nil
   | cons n l' => append (reverse l') n
   end.
 
 (* Q9-2 少し複雑な関数を定義する問題 *)
-Fixpoint list_at (l : list nat) (n : nat) :=
+Fixpoint list_at (l : list nat) (n : nat) : nat :=
   match l with
   | nil => 0
   | cons h l' =>
@@ -474,7 +474,7 @@ Fixpoint list_at (l : list nat) (n : nat) :=
     end
   end.
 
-Fixpoint last (l : list nat) :=
+Fixpoint last (l : list nat) : nat :=
   match l with
   | nil => 0
   | cons n1 nil => n1

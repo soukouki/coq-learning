@@ -627,7 +627,7 @@ Compute (cons 1 (cons 2 nil)).
 リストの長さを計算する関数です
 再帰関数を定義するときはFixpointコマンドを使います
  *)
-Fixpoint length (l : list nat) :=
+Fixpoint length (l : list nat) : nat :=
   match l with
   | nil => 0
   | cons _ l' => S (length l')
@@ -637,7 +637,7 @@ Compute length (1 :: nil). (* consはこのような書き方もできます *)
 Compute length (1 :: 2 :: nil).
 
 (* リストの末尾に値を追加する関数です *)
-Fixpoint append (l : list nat) (n : nat) :=
+Fixpoint append (l : list nat) (n : nat) : list nat :=
   match l with
   | nil => cons n nil
   | cons head l' => cons head (append l' n)
@@ -645,10 +645,14 @@ Fixpoint append (l : list nat) (n : nat) :=
 Compute append (1 :: nil) 2.
 
 (* Q9-1 リストを逆順に並べる関数reverseを定義してみましょう *)
-Fixpoint reverse (l : list nat) := l.
+Fixpoint reverse (l : list nat) : list nat := l.
+Compute reverse nil.
+Compute reverse (1 :: nil).
+Compute reverse (1 :: 2 :: nil).
+Compute reverse (1 :: 2 :: 3 :: nil).
 
 (* Q9-2 リストのn番目の要素を取得する関数を定義してみましょう 2重にパターンマッチングする必要があります *)
-Fixpoint list_at (l : list nat) (n : nat) := 0.
+Fixpoint list_at (l : list nat) (n : nat) : nat := 0.
 Compute list_at (1 :: 2 :: nil) 0.
 Compute list_at (1 :: 2 :: nil) 1.
 Compute list_at (1 :: 2 :: nil) 2. (* 範囲外のインデックスを参照された場合には、0などの適当な値を返すようにしましょう *)
@@ -659,7 +663,7 @@ Compute list_at (1 :: 2 :: nil) 2. (* 範囲外のインデックスを参照さ
 Coqでは無限ループができないことになっているので、それを保証するために必ずパターンマッチの一部を使って呼び出す必要があります
 (もっと一般に無限ループしないこと(=停止性)を保証するやり方は後ほど述べます)
  *)
-Fixpoint last (l : list nat) :=
+Fixpoint last (l : list nat) : nat :=
   match l with
   | nil => 0
   | cons n1 nil => n1

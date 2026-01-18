@@ -730,22 +730,12 @@ Qed.
 (* Q9-4 *)
 Theorem last_append l n : last (append l n) = n.
 Proof.
-have : append l n <> nil.
 (* haveとsuffはゴールを追加し、それを使って証明を進めます。長い証明ではhaveとsuffを使い見通しを良くします *)
-- move => H1. (* A <> Bはnot (A == B)になります。not AはA -> False(偽)なので、moveで移動できます *)
-  case_eq l. (* caseだけでは条件が足りないとき、case_eqというタクティックを使うとうまく行く場合もあります *)
-  + move => H2.
-    rewrite H2 in H1.
-(* 
-rewrite inを使うことで、コンテキストにある項を書き換えられます
-同様のタクティックとして、apply inもあります
- *)
-    rewrite /= in H1.
-    by []. (* 仮定にn :: nil = nilのように明らかに偽である式があるとき、byタクティックを使うとゴールを問わず証明できます *)
-  + move => n' l' H2.
-    rewrite H2 in H1.
-    by rewrite /= in H1.
-- move => H1.
+have : append l n <> nil.
+Restart.
+suff : append l n <> nil.
+Restart.
+(* では、ここから証明を始めてください *)
 Admitted.
 
 (* Q9-5 *)

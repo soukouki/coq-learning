@@ -745,7 +745,7 @@ rewrite inを使うことで、コンテキストにある項を書き換えら�
   + move => n' l' H2.
     rewrite H2 in H1.
     by rewrite /= in H1.
-- move => append_neq_nil.
+- move => H1.
 Admitted.
 
 (* Q9-5 *)
